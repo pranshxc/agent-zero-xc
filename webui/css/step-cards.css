@@ -1,246 +1,421 @@
 /* =============================================================================
-   step-cards.css  —  Agent Zero XC
-   Flat headline-style step expansions.
-   NO CARDS. No boxes. Structure through whitespace + typography.
+   step-cards.css — Agent Zero XC
+   Per-tool card bodies injected by step-renderer.js
+   VSCode Copilot aesthetic: icon row + structured content, subtle accent
    ============================================================================= */
 
-/* Shared tokens — reuse process-group vars */
-.process-group {
-  --sc-mono:  var(--font-family-code, 'SF Mono', 'Fira Code', monospace);
-  --sc-ui:    -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-}
-
 /* ============================================================
-   STEP HEADLINE BLOCK
-   Written by step-renderer.js above the existing title.
-   Gives each step a bold human-readable headline + subline.
+   TOOL-TYPE ACCENT MAP
+   Set via JS: step.style.setProperty('--step-type-accent', ...)
    ============================================================ */
 
-/* Headline injected as first child of .process-step-header */
-.step-headline {
-  display: contents; /* doesn't create a box — merges into flex row */
+/* ============================================================
+   FILE / EDITOR card
+   ============================================================ */
+.az-card-editor {
+  padding: 8px 12px 10px;
 }
-
-/* Large headline replaces the generic step title styling */
-.step-hl-title {
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--pg-fg, rgba(255,255,255,0.88));
-  white-space: nowrap;
+.az-card-editor .az-file-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.az-card-editor .az-file-icon {
+  width: 14px; height: 14px;
+  color: var(--ac-file);
+  flex-shrink: 0;
+  font-size: 13px;
+}
+.az-card-editor .az-file-icon .material-symbols-outlined { font-size: 14px; }
+.az-card-editor .az-file-path {
+  font-family: var(--az-mono);
+  font-size: 11.5px;
+  color: var(--ac-file);
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
+  white-space: nowrap;
   flex: 1;
-  align-self: center;
-  font-family: var(--sc-ui);
-}
-.light-mode .step-hl-title { color: rgba(0,0,0,0.85); }
-
-/* Subline — dimmed detail next to title */
-.step-hl-sub {
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: var(--pg-fg-mid, rgba(255,255,255,0.5));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 320px;
-  flex-shrink: 1;
   min-width: 0;
-  align-self: center;
-  font-family: var(--sc-ui);
 }
-.light-mode .step-hl-sub { color: rgba(0,0,0,0.45); }
-
-/* Pill tag — minimal, for language / engine / status */
-.step-hl-pill {
-  display: inline-block;
-  font-size: 0.54rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  border: 1px solid var(--pg-line, rgba(255,255,255,0.07));
-  color: var(--pg-fg-dim, rgba(255,255,255,0.28));
-  background: transparent;
-  flex-shrink: 0;
-  align-self: center;
-  font-family: var(--sc-mono);
-  white-space: nowrap;
-}
-.light-mode .step-hl-pill { border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.32); }
-
-/* Spacer between hl-title and hl-sub */
-.step-hl-dot {
-  font-size: 0.85rem;
-  color: var(--pg-fg-faint, rgba(255,255,255,0.12));
-  line-height: 1;
-  flex-shrink: 0;
-  align-self: center;
-  margin: 0 1px;
-  user-select: none;
-}
-
-/* ============================================================
-   EXPANDED DETAIL — flat, typographic sections
-   ============================================================ */
-
-/* Section label above detail content */
-.step-detail-label {
-  font-size: 0.58rem;
+.az-card-editor .az-op-badge {
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--pg-fg-dim, rgba(255,255,255,0.28));
-  margin-bottom: 4px;
-  font-family: var(--sc-mono);
-}
-
-/* Inline code block — used for command, query, path etc */
-.step-code-line {
-  font-family: var(--sc-mono);
-  font-size: 0.7rem;
-  color: var(--pg-fg, rgba(255,255,255,0.88));
-  opacity: 0.72;
-  background: var(--pg-code-bg, rgba(0,0,0,0.35));
-  padding: 3px 7px;
+  letter-spacing: 0.5px;
+  padding: 1px 6px;
   border-radius: 3px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  display: block;
-  line-height: 1.5;
-  margin-bottom: 4px;
+  flex-shrink: 0;
+  font-family: var(--az-mono);
 }
-.light-mode .step-code-line { background: rgba(0,0,0,0.05); }
-
-/* Prose paragraph inside detail */
-.step-prose-line {
-  font-size: 0.73rem;
-  color: var(--pg-fg-mid, rgba(255,255,255,0.5));
-  line-height: 1.58;
-  word-break: break-word;
-  margin-bottom: 3px;
-}
-.light-mode .step-prose-line { color: rgba(0,0,0,0.5); }
-
-/* URL line */
-.step-url-line {
-  font-family: var(--sc-mono);
-  font-size: 0.66rem;
-  color: var(--pg-fg-mid);
-  opacity: 0.65;
-  text-decoration: none;
-  word-break: break-all;
-  display: block;
-  margin-bottom: 3px;
-}
-.step-url-line:hover { opacity: 0.9; text-decoration: underline; }
-.light-mode .step-url-line { color: rgba(0,0,0,0.5); }
-
-/* Diff block */
-.step-diff-block {
-  font-family: var(--sc-mono);
-  font-size: 0.65rem;
-  line-height: 1.5;
-  margin: 4px 0;
-  max-height: 9em;
-  overflow: hidden;
-  border-left: 2px solid var(--pg-line);
-  padding-left: 8px;
-}
-.step-diff-add { color: var(--pg-fg); opacity: 0.78; display: block; }
-.step-diff-del { color: var(--pg-fg-dim); text-decoration: line-through; display: block; }
-.step-diff-ctx { color: var(--pg-fg-dim); opacity: 0.55; display: block; }
-
-/* Task list */
-.step-task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 4px 0;
-  padding: 0;
-  list-style: none;
-}
-.step-task-item {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 2px 0;
-  border-top: 1px solid var(--pg-line);
-}
-.step-task-item:first-child { border-top: none; }
-.step-task-id {
-  font-family: var(--sc-mono);
-  font-size: 0.56rem;
-  color: var(--pg-fg-dim);
-  min-width: 1.8em;
+.az-card-editor .az-op-badge.op-write { background: rgba(86,156,214,0.15); color: var(--ac-code); border: 1px solid rgba(86,156,214,0.25); }
+.az-card-editor .az-op-badge.op-read  { background: rgba(206,145,120,0.12); color: var(--ac-file); border: 1px solid rgba(206,145,120,0.22); }
+.az-card-editor .az-lang-badge {
+  font-size: 10px; font-weight: 600;
+  font-family: var(--az-mono);
+  color: var(--pg-text-dim);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--pg-border-md);
   flex-shrink: 0;
 }
-.step-task-text {
-  font-size: 0.7rem;
-  color: var(--pg-fg-mid);
-  line-height: 1.4;
+.az-card-editor .az-diff-block {
+  font-family: var(--az-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  border-radius: 3px;
+  overflow: hidden;
+  max-height: 8em;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--pg-border);
+}
+.light-mode .az-card-editor .az-diff-block { background: rgba(0,0,0,0.04); }
+.az-diff-line { padding: 1px 10px; display: block; white-space: pre-wrap; word-break: break-all; }
+.az-diff-add  { background: rgba(86,156,214,0.08); color: #9cdcfe; }
+.az-diff-del  { background: rgba(244,135,113,0.07); color: #f48771; text-decoration: line-through; text-decoration-color: rgba(244,135,113,0.4); }
+.az-diff-ctx  { color: var(--pg-text-dim); }
+.light-mode .az-diff-add { background: rgba(4,81,165,0.07); color: #0451a5; }
+.light-mode .az-diff-del { background: rgba(199,46,14,0.06); color: #c72e0f; }
+.light-mode .az-diff-ctx { color: var(--pg-text-dim); }
+
+/* ============================================================
+   SEARCH card
+   ============================================================ */
+.az-card-search {
+  padding: 8px 12px 10px;
+}
+.az-card-search .az-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.az-card-search .az-search-engine {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px;
+  border: 1px solid var(--pg-border-md);
+  color: var(--ac-search); font-family: var(--az-mono);
+  background: rgba(79,193,255,0.08);
+}
+.az-card-search .az-search-query {
+  font-family: var(--az-mono);
+  font-size: 11.5px;
+  color: var(--pg-text);
+  opacity: 0.85;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--pg-border);
+  border-radius: 4px;
+  padding: 5px 9px;
+  word-break: break-word;
+  line-height: 1.5;
+  display: block;
+}
+.light-mode .az-card-search .az-search-query {
+  background: rgba(0,0,0,0.04);
+}
+
+/* ============================================================
+   TODO / TASK MANAGER card
+   ============================================================ */
+.az-card-todo {
+  padding: 8px 12px 10px;
+}
+.az-card-todo .az-todo-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.az-card-todo .az-todo-action {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px;
+  font-family: var(--az-mono);
+  flex-shrink: 0;
+}
+.az-todo-action.act-complete { background: rgba(78,201,176,0.12); color: var(--ac-done); border: 1px solid rgba(78,201,176,0.25); }
+.az-todo-action.act-add      { background: rgba(86,156,214,0.12); color: var(--ac-code); border: 1px solid rgba(86,156,214,0.25); }
+.az-todo-action.act-remove   { background: rgba(244,135,113,0.1); color: var(--ac-err);  border: 1px solid rgba(244,135,113,0.22); }
+.az-todo-action.act-update   { background: rgba(233,196,106,0.1); color: var(--ac-think);border: 1px solid rgba(233,196,106,0.22); }
+.az-todo-action.act-default  { background: rgba(133,133,133,0.08); color: var(--pg-text-dim); border: 1px solid var(--pg-border-md); }
+.az-card-todo .az-todo-taskid {
+  font-family: var(--az-mono); font-size: 11px;
+  color: var(--pg-text-dim);
+}
+.az-card-todo .az-todo-remaining {
+  margin-left: auto;
+  font-size: 10px; font-family: var(--az-mono);
+  color: var(--pg-text-dim);
+}
+/* Progress bar */
+.az-card-todo .az-progress {
+  height: 2px;
+  background: var(--pg-border-md);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.az-card-todo .az-progress-fill {
+  height: 100%;
+  background: var(--ac-done);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  opacity: 0.7;
+}
+/* Task rows */
+.az-card-todo .az-task-list {
+  display: flex; flex-direction: column;
+  gap: 0; margin: 0; padding: 0; list-style: none;
+  border: 1px solid var(--pg-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.az-card-todo .az-task-row {
+  display: flex; align-items: flex-start;
+  gap: 8px; padding: 5px 9px;
+  border-bottom: 1px solid var(--pg-border);
+  transition: background 0.1s;
+}
+.az-card-todo .az-task-row:last-child { border-bottom: none; }
+.az-card-todo .az-task-row:hover { background: rgba(255,255,255,0.03); }
+.light-mode .az-card-todo .az-task-row:hover { background: rgba(0,0,0,0.03); }
+.az-card-todo .az-task-id {
+  font-family: var(--az-mono); font-size: 10px;
+  color: var(--pg-text-dim); min-width: 2em;
+  flex-shrink: 0; padding-top: 1px;
+}
+.az-card-todo .az-task-text {
+  font-size: 11.5px; color: var(--pg-text);
+  opacity: 0.78; line-height: 1.45;
   word-break: break-word;
 }
 
-/* Progress bar — hairline */
-.step-progress-bar {
-  height: 1px;
-  background: var(--pg-line);
-  margin: 5px 0 6px;
-  border-radius: 1px;
-  overflow: hidden;
+/* ============================================================
+   SUB-AGENT card
+   ============================================================ */
+.az-card-agent {
+  padding: 8px 12px 10px;
 }
-.step-progress-fill {
-  height: 100%;
-  background: var(--pg-fg-mid);
-  border-radius: 1px;
-  transition: width 0.3s ease;
+.az-card-agent .az-agent-row {
+  display: flex; align-items: center;
+  gap: 8px; margin-bottom: 6px;
 }
-
-/* Stack trace detail */
-.step-stack-detail {
-  margin: 4px 0 0;
+.az-card-agent .az-agent-direction {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px;
+  font-family: var(--az-mono);
+  background: rgba(197,134,192,0.1);
+  border: 1px solid rgba(197,134,192,0.25);
+  color: var(--ac-agent);
+  flex-shrink: 0;
 }
-.step-stack-detail summary {
-  cursor: pointer;
-  font-size: 0.6rem;
-  font-family: var(--sc-mono);
-  color: var(--pg-fg-dim);
-  user-select: none;
-  padding: 2px 0;
+.az-card-agent .az-agent-name {
+  font-weight: 600; font-size: 12px;
+  color: var(--ac-agent);
 }
-.step-stack-pre {
-  font-family: var(--sc-mono);
-  font-size: 0.6rem;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin: 3px 0 0;
-  padding: 5px 8px;
-  background: var(--pg-code-bg);
-  border-radius: 3px;
-  max-height: 10em;
-  overflow: auto;
-  scrollbar-width: thin;
-  color: var(--pg-fg-dim);
-  line-height: 1.5;
+.az-card-agent .az-agent-task {
+  font-size: 11.5px; color: var(--pg-text-mid);
+  line-height: 1.55; word-break: break-word;
+  padding-top: 4px;
+  border-top: 1px solid var(--pg-border);
 }
-.light-mode .step-stack-pre { background: rgba(0,0,0,0.04); }
 
 /* ============================================================
-   COLLAPSED SUMMARY LINE  — injected into step-header
-   This is the key design detail:
-   On collapse → show a single graceful dimmed summary.
+   WEB / BROWSER card
    ============================================================ */
-/* Styles live in process-group.css as .step-summary-line */
+.az-card-web {
+  padding: 8px 12px 10px;
+}
+.az-card-web .az-web-row {
+  display: flex; align-items: center;
+  gap: 8px; margin-bottom: 6px; flex-wrap: wrap;
+}
+.az-card-web .az-web-domain {
+  font-weight: 600; font-size: 12px;
+  color: var(--ac-search);
+}
+.az-card-web .az-web-status {
+  font-family: var(--az-mono); font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 3px;
+}
+.az-web-status.s-ok   { background: rgba(78,201,176,0.1);  color: var(--pg-done); border: 1px solid rgba(78,201,176,0.25); }
+.az-web-status.s-err  { background: rgba(244,135,113,0.1); color: var(--pg-error);border: 1px solid rgba(244,135,113,0.25); }
+.az-web-status.s-redir{ background: rgba(233,196,106,0.1); color: var(--pg-warn); border: 1px solid rgba(233,196,106,0.25); }
+.az-card-web .az-web-url {
+  font-family: var(--az-mono); font-size: 11px;
+  color: var(--pg-text-mid); text-decoration: none;
+  word-break: break-all; display: block;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--pg-border);
+  border-radius: 3px;
+  transition: color 0.1s;
+}
+.az-card-web .az-web-url:hover { color: var(--ac-search); text-decoration: underline; }
+.light-mode .az-card-web .az-web-url { background: rgba(0,0,0,0.04); }
+
+/* ============================================================
+   SKILL card
+   ============================================================ */
+.az-card-skill {
+  padding: 8px 12px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.az-card-skill .az-skill-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: rgba(181,206,168,0.1);
+  border: 1px solid rgba(181,206,168,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ac-skill);
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.az-card-skill .az-skill-icon .material-symbols-outlined { font-size: 15px; }
+.az-card-skill .az-skill-info { flex: 1; min-width: 0; }
+.az-card-skill .az-skill-name {
+  font-weight: 600; font-size: 12px;
+  color: var(--ac-skill); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.az-card-skill .az-skill-target {
+  font-size: 10px; color: var(--pg-text-dim);
+  font-family: var(--az-mono); margin-top: 1px;
+}
+
+/* ============================================================
+   END / DONE card
+   ============================================================ */
+.az-card-done {
+  padding: 8px 12px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.az-card-done .az-done-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(78,201,176,0.12);
+  border: 1px solid rgba(78,201,176,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--pg-done); font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
+.az-card-done .az-done-chips {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.az-card-done .az-done-chip {
+  font-size: 10.5px; font-family: var(--az-mono);
+  padding: 2px 8px; border-radius: 10px;
+  border: 1px solid var(--pg-border-md);
+  color: var(--pg-text-dim);
+  background: rgba(255,255,255,0.04);
+}
+.light-mode .az-card-done .az-done-chip { background: rgba(0,0,0,0.04); }
+
+/* ============================================================
+   CALLOUT (WRN/ERR)
+   ============================================================ */
+.az-callout {
+  display: flex; gap: 10px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 12px; line-height: 1.55;
+}
+.az-callout.az-callout-warn {
+  background: rgba(204,167,0,0.07);
+  border: 1px solid rgba(204,167,0,0.2);
+}
+.az-callout.az-callout-err {
+  background: rgba(244,135,113,0.07);
+  border: 1px solid rgba(244,135,113,0.22);
+}
+.az-callout .az-callout-icon {
+  flex-shrink: 0; font-size: 14px; margin-top: 1px;
+}
+.az-callout-warn .az-callout-icon { color: var(--pg-warn); }
+.az-callout-err  .az-callout-icon { color: var(--pg-error); }
+.az-callout .az-callout-body { flex: 1; min-width: 0; }
+.az-callout .az-callout-text {
+  color: var(--pg-text); opacity: 0.85;
+  word-break: break-word;
+}
+.az-callout .az-stack-detail {
+  margin-top: 5px;
+}
+.az-callout .az-stack-detail summary {
+  cursor: pointer; font-size: 10.5px;
+  font-family: var(--az-mono);
+  color: var(--pg-text-dim); user-select: none;
+}
+.az-callout .az-stack-pre {
+  font-family: var(--az-mono); font-size: 10.5px;
+  white-space: pre-wrap; word-break: break-all;
+  margin: 4px 0 0; padding: 6px 8px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 3px; max-height: 10em;
+  overflow: auto; scrollbar-width: thin;
+  color: var(--pg-text-dim); line-height: 1.5;
+}
+.light-mode .az-callout .az-stack-pre { background: rgba(0,0,0,0.05); }
+
+/* ============================================================
+   GENERIC TOOL card
+   ============================================================ */
+.az-card-tool {
+  padding: 8px 12px 10px;
+}
+.az-card-tool .az-tool-name-row {
+  display: flex; align-items: center;
+  gap: 8px; margin-bottom: 7px;
+}
+.az-card-tool .az-tool-raw-name {
+  font-family: var(--az-mono); font-size: 11.5px;
+  font-weight: 600; color: var(--ac-tool);
+}
+.az-card-tool .az-tool-action {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 1px 6px; border-radius: 3px;
+  font-family: var(--az-mono);
+  background: rgba(156,220,254,0.08);
+  border: 1px solid rgba(156,220,254,0.18);
+  color: var(--ac-tool);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   INFO card
+   ============================================================ */
+.az-card-info {
+  padding: 6px 12px 8px;
+  font-size: 12px;
+  color: var(--pg-text-mid);
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+/* ============================================================
+   SECTION LABEL
+   ============================================================ */
+.az-section-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.55px;
+  color: var(--pg-text-dim);
+  font-family: var(--az-mono);
+  margin: 8px 0 4px;
+  display: block;
+}
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 640px) {
-  .step-hl-sub    { display: none; }
-  .step-diff-block { max-height: 5em; }
-  .step-task-list  { display: none; }
+  .az-card-editor .az-diff-block { max-height: 5em; }
+  .az-card-todo .az-task-list    { display: none; }
+  .az-card-tool                  { padding: 6px 8px 8px; }
 }
