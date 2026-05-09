@@ -1,578 +1,246 @@
 /* =============================================================================
    step-cards.css  —  Agent Zero XC
-   Monochrome step card additions injected by step-renderer.js.
-   Follows the same neutral palette as process-group.css.
+   Flat headline-style step expansions.
+   NO CARDS. No boxes. Structure through whitespace + typography.
    ============================================================================= */
 
-/* ---------------------------------------------------------------------------
-   Shared tokens (reuse process-group vars where possible)
---------------------------------------------------------------------------- */
+/* Shared tokens — reuse process-group vars */
 .process-group {
-  --sc-border:   rgba(255,255,255,0.07);
-  --sc-bg:       rgba(255,255,255,0.03);
-  --sc-text:     rgba(255,255,255,0.75);
-  --sc-dim:      rgba(255,255,255,0.38);
-  --sc-faint:    rgba(255,255,255,0.2);
-  --sc-mono:     var(--font-family-code, monospace);
-}
-.light-mode .process-group {
-  --sc-border:  rgba(0,0,0,0.09);
-  --sc-bg:      rgba(0,0,0,0.025);
-  --sc-text:    rgba(0,0,0,0.76);
-  --sc-dim:     rgba(0,0,0,0.38);
-  --sc-faint:   rgba(0,0,0,0.2);
+  --sc-mono:  var(--font-family-code, 'SF Mono', 'Fira Code', monospace);
+  --sc-ui:    -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
 }
 
-/* ---------------------------------------------------------------------------
-   USE / MCP  —  generic tool call row
---------------------------------------------------------------------------- */
-.step-tool-card {
-  margin: 4px 0 2px;
-  border: 1px solid var(--sc-border, rgba(255,255,255,0.07));
-  border-radius: 5px;
-  overflow: hidden;
-  background: var(--sc-bg, rgba(255,255,255,0.025));
+/* ============================================================
+   STEP HEADLINE BLOCK
+   Written by step-renderer.js above the existing title.
+   Gives each step a bold human-readable headline + subline.
+   ============================================================ */
+
+/* Headline injected as first child of .process-step-header */
+.step-headline {
+  display: contents; /* doesn't create a box — merges into flex row */
 }
 
-.step-tool-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  flex-wrap: wrap;
-}
-
-.step-tool-icon { display: none; }
-
-.step-tool-name {
-  font-weight: 500;
-  font-family: var(--sc-mono);
-  font-size: 0.72rem;
-  color: var(--sc-text, rgba(255,255,255,0.75));
-}
-
-.step-tool-action {
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--sc-border, rgba(255,255,255,0.07));
-  background: rgba(255,255,255,0.04);
-  color: var(--sc-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-family: var(--sc-mono);
-}
-.light-mode .step-tool-action { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.4); }
-
-.step-tool-status {
-  margin-left: auto;
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 7px;
-  border-radius: 8px;
-  border: 1px solid var(--sc-border);
-  background: rgba(255,255,255,0.03);
-  color: var(--sc-dim);
-  font-family: var(--sc-mono);
-}
-.light-mode .step-tool-status { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.38); }
-
-.tool-status-running {
-  animation: spin3dot 1.2s ease-in-out infinite;
-}
-
-.step-tool-kvgrid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 10px;
-  padding: 4px 10px 8px;
-  border-top: 1px solid var(--sc-border);
-}
-
-.step-tool-kvrow { display: contents; }
-
-.step-tool-kvkey {
-  font-family: var(--sc-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  color: var(--sc-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  text-align: right;
-  padding-right: 2px;
+/* Large headline replaces the generic step title styling */
+.step-hl-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--pg-fg, rgba(255,255,255,0.88));
   white-space: nowrap;
-  padding-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+  align-self: center;
+  font-family: var(--sc-ui);
+}
+.light-mode .step-hl-title { color: rgba(0,0,0,0.85); }
+
+/* Subline — dimmed detail next to title */
+.step-hl-sub {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--pg-fg-mid, rgba(255,255,255,0.5));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+  flex-shrink: 1;
+  min-width: 0;
+  align-self: center;
+  font-family: var(--sc-ui);
+}
+.light-mode .step-hl-sub { color: rgba(0,0,0,0.45); }
+
+/* Pill tag — minimal, for language / engine / status */
+.step-hl-pill {
+  display: inline-block;
+  font-size: 0.54rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--pg-line, rgba(255,255,255,0.07));
+  color: var(--pg-fg-dim, rgba(255,255,255,0.28));
+  background: transparent;
+  flex-shrink: 0;
+  align-self: center;
+  font-family: var(--sc-mono);
+  white-space: nowrap;
+}
+.light-mode .step-hl-pill { border-color: rgba(0,0,0,0.1); color: rgba(0,0,0,0.32); }
+
+/* Spacer between hl-title and hl-sub */
+.step-hl-dot {
+  font-size: 0.85rem;
+  color: var(--pg-fg-faint, rgba(255,255,255,0.12));
+  line-height: 1;
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 1px;
+  user-select: none;
 }
 
-.step-tool-kvval {
+/* ============================================================
+   EXPANDED DETAIL — flat, typographic sections
+   ============================================================ */
+
+/* Section label above detail content */
+.step-detail-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--pg-fg-dim, rgba(255,255,255,0.28));
+  margin-bottom: 4px;
+  font-family: var(--sc-mono);
+}
+
+/* Inline code block — used for command, query, path etc */
+.step-code-line {
   font-family: var(--sc-mono);
   font-size: 0.7rem;
-  color: var(--sc-text);
-  opacity: 0.78;
-  word-break: break-word;
-  white-space: pre-wrap;
-  line-height: 1.45;
-}
-
-/* ---------------------------------------------------------------------------
-   TODO manager
---------------------------------------------------------------------------- */
-.step-todo-card {
-  margin: 4px 0 2px;
-  border: 1px solid var(--sc-border);
-  border-radius: 5px;
-  overflow: hidden;
-  background: var(--sc-bg);
-}
-
-.step-todo-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  flex-wrap: wrap;
-}
-
-.step-todo-icon { display: none; }
-
-.step-todo-tool {
-  font-weight: 500;
-  font-family: var(--sc-mono);
-  font-size: 0.72rem;
-  color: var(--sc-text);
-}
-
-.step-todo-action {
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 6px;
+  color: var(--pg-fg, rgba(255,255,255,0.88));
+  opacity: 0.72;
+  background: var(--pg-code-bg, rgba(0,0,0,0.35));
+  padding: 3px 7px;
   border-radius: 3px;
-  border: 1px solid var(--sc-border);
-  color: var(--sc-dim);
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: block;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.light-mode .step-code-line { background: rgba(0,0,0,0.05); }
+
+/* Prose paragraph inside detail */
+.step-prose-line {
+  font-size: 0.73rem;
+  color: var(--pg-fg-mid, rgba(255,255,255,0.5));
+  line-height: 1.58;
+  word-break: break-word;
+  margin-bottom: 3px;
+}
+.light-mode .step-prose-line { color: rgba(0,0,0,0.5); }
+
+/* URL line */
+.step-url-line {
   font-family: var(--sc-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  font-size: 0.66rem;
+  color: var(--pg-fg-mid);
+  opacity: 0.65;
+  text-decoration: none;
+  word-break: break-all;
+  display: block;
+  margin-bottom: 3px;
 }
+.step-url-line:hover { opacity: 0.9; text-decoration: underline; }
+.light-mode .step-url-line { color: rgba(0,0,0,0.5); }
 
-.todo-complete, .todo-add, .todo-remove,
-.todo-update, .todo-default {
-  background: rgba(255,255,255,0.04);
-}
-.light-mode .todo-complete, .light-mode .todo-add,
-.light-mode .todo-remove, .light-mode .todo-update,
-.light-mode .todo-default { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.4); }
-
-.step-todo-taskid,
-.step-todo-remaining {
+/* Diff block */
+.step-diff-block {
   font-family: var(--sc-mono);
-  font-size: 0.6rem;
-  color: var(--sc-faint);
-}
-.step-todo-remaining { margin-left: auto; }
-
-.step-todo-progress {
-  height: 2px;
-  background: rgba(255,255,255,0.05);
-  margin: 0 10px 8px;
-  border-radius: 2px;
+  font-size: 0.65rem;
+  line-height: 1.5;
+  margin: 4px 0;
+  max-height: 9em;
   overflow: hidden;
+  border-left: 2px solid var(--pg-line);
+  padding-left: 8px;
 }
-.light-mode .step-todo-progress { background: rgba(0,0,0,0.06); }
+.step-diff-add { color: var(--pg-fg); opacity: 0.78; display: block; }
+.step-diff-del { color: var(--pg-fg-dim); text-decoration: line-through; display: block; }
+.step-diff-ctx { color: var(--pg-fg-dim); opacity: 0.55; display: block; }
 
-.step-todo-progress-bar {
-  height: 100%;
-  background: rgba(255,255,255,0.3);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-.light-mode .step-todo-progress-bar { background: rgba(0,0,0,0.25); }
-
-.step-todo-tasks {
-  padding: 0 10px 8px;
+/* Task list */
+.step-task-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
 }
-
-.todo-task-row {
+.step-task-item {
   display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  padding: 3px 0;
-  border-top: 1px solid var(--sc-border);
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 0;
+  border-top: 1px solid var(--pg-line);
 }
-.light-mode .todo-task-row { border-top-color: rgba(0,0,0,0.05); }
-
-.todo-task-id {
+.step-task-item:first-child { border-top: none; }
+.step-task-id {
   font-family: var(--sc-mono);
-  font-size: 0.58rem;
-  color: var(--sc-faint);
-  min-width: 2em;
-  padding-top: 1px;
+  font-size: 0.56rem;
+  color: var(--pg-fg-dim);
+  min-width: 1.8em;
+  flex-shrink: 0;
 }
-
-.todo-task-text {
+.step-task-text {
   font-size: 0.7rem;
-  color: var(--sc-text);
-  opacity: 0.72;
+  color: var(--pg-fg-mid);
   line-height: 1.4;
   word-break: break-word;
 }
 
-/* ---------------------------------------------------------------------------
-   Text editor card
---------------------------------------------------------------------------- */
-.step-editor-card {
-  margin: 4px 0 2px;
-  border: 1px solid var(--sc-border);
-  border-radius: 5px;
-  overflow: hidden;
-  background: var(--sc-bg);
-}
-
-.step-editor-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  flex-wrap: wrap;
+/* Progress bar — hairline */
+.step-progress-bar {
+  height: 1px;
+  background: var(--pg-line);
+  margin: 5px 0 6px;
+  border-radius: 1px;
   overflow: hidden;
 }
+.step-progress-fill {
+  height: 100%;
+  background: var(--pg-fg-mid);
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
 
-.step-editor-icon { display: none; }
-
-.step-editor-op {
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--sc-border);
-  color: var(--sc-dim);
+/* Stack trace detail */
+.step-stack-detail {
+  margin: 4px 0 0;
+}
+.step-stack-detail summary {
+  cursor: pointer;
+  font-size: 0.6rem;
   font-family: var(--sc-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  background: rgba(255,255,255,0.04);
-  flex-shrink: 0;
-}
-.light-mode .step-editor-op { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.4); }
-.editor-op-read { }
-.editor-op-write { }
-
-.step-editor-breadcrumb {
-  display: flex;
-  align-items: center;
-  font-family: var(--sc-mono);
-  font-size: 0.66rem;
-  color: var(--sc-dim);
-  overflow: hidden;
-  min-width: 0;
-  flex: 1;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.editor-crumb { opacity: 0.5; }
-.editor-crumb-file { opacity: 0.85; font-weight: 500; }
-.editor-crumb-sep { opacity: 0.25; margin: 0 1px; }
-
-.step-editor-lang {
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--sc-border);
-  color: var(--sc-faint);
-  font-family: var(--sc-mono);
-  text-transform: uppercase;
-  background: rgba(255,255,255,0.03);
-  flex-shrink: 0;
-}
-.light-mode .step-editor-lang { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.32); }
-
-.step-editor-preview {
-  padding: 7px 10px;
-  margin: 0;
-  font-family: var(--sc-mono);
-  font-size: 0.66rem;
-  color: var(--sc-text);
-  opacity: 0.65;
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.5;
-  border-top: 1px solid var(--sc-border);
-  max-height: 8em;
-  overflow: hidden;
-}
-
-.step-editor-diff {
-  padding: 4px 0;
-  font-family: var(--sc-mono);
-  font-size: 0.66rem;
-  line-height: 1.5;
-  overflow: hidden;
-  max-height: 10em;
-  border-top: 1px solid var(--sc-border);
-}
-
-.diff-line { padding: 1px 10px; white-space: pre-wrap; word-break: break-all; }
-
-.diff-add {
-  background: rgba(255,255,255,0.045);
-  color: var(--sc-text);
-}
-.diff-del {
-  background: rgba(255,255,255,0.015);
-  color: var(--sc-faint);
-  text-decoration: line-through;
-  text-decoration-color: rgba(255,255,255,0.2);
-}
-.diff-ctx { color: var(--sc-faint); }
-
-.light-mode .diff-add { background: rgba(0,0,0,0.03); color: var(--sc-text); }
-.light-mode .diff-del  { background: transparent; color: rgba(0,0,0,0.35); }
-.light-mode .diff-ctx  { color: rgba(0,0,0,0.25); }
-
-/* ---------------------------------------------------------------------------
-   Search card
---------------------------------------------------------------------------- */
-.step-search-card {
-  margin: 4px 0 2px;
-  border: 1px solid var(--sc-border);
-  border-radius: 5px;
-  padding: 6px 10px;
-  background: var(--sc-bg);
-}
-
-.step-search-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.step-search-icon { display: none; }
-
-.step-search-label {
-  font-weight: 500;
-  font-family: var(--sc-mono);
-  font-size: 0.7rem;
-  color: var(--sc-text);
-}
-
-.step-search-engine {
-  font-size: 0.58rem;
-  font-weight: 500;
-  padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid var(--sc-border);
-  color: var(--sc-faint);
-  font-family: var(--sc-mono);
-  text-transform: uppercase;
-  background: rgba(255,255,255,0.03);
-}
-.light-mode .step-search-engine { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.32); }
-
-.step-search-query {
-  font-size: 0.72rem;
-  color: var(--sc-text);
-  opacity: 0.72;
-  word-break: break-word;
-  font-style: italic;
+  color: var(--pg-fg-dim);
+  user-select: none;
   padding: 2px 0;
 }
-
-/* ---------------------------------------------------------------------------
-   Sub-agent card
---------------------------------------------------------------------------- */
-.step-sub-card {
-  margin: 4px 0 2px;
-  border: 1px solid var(--sc-border);
-  border-radius: 5px;
-  padding: 6px 10px;
-  background: var(--sc-bg);
-}
-
-.step-sub-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 3px;
-}
-
-.step-sub-icon { display: none; }
-
-.step-sub-label {
-  font-size: 0.66rem;
-  color: var(--sc-faint);
-}
-
-.step-sub-name {
-  font-weight: 500;
+.step-stack-pre {
   font-family: var(--sc-mono);
-  font-size: 0.72rem;
-  color: var(--sc-text);
-}
-
-.step-sub-task {
-  font-size: 0.7rem;
-  color: var(--sc-text);
-  opacity: 0.65;
-  padding-top: 4px;
-  border-top: 1px solid var(--sc-border);
-  margin-top: 4px;
-  line-height: 1.5;
-  word-break: break-word;
-}
-
-/* ---------------------------------------------------------------------------
-   Web card additions
---------------------------------------------------------------------------- */
-.step-web-header {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 0 2px;
-}
-
-.step-web-favicon { display: none; }
-
-.step-web-domain {
-  font-weight: 500;
-  font-family: var(--sc-mono);
-  font-size: 0.7rem;
-  color: var(--sc-dim);
-}
-
-.step-web-card .step-web-url {
-  font-family: var(--sc-mono);
-  font-size: 0.64rem;
-  color: var(--sc-dim);
-  opacity: 0.65;
-  text-decoration: none;
-  word-break: break-all;
-}
-.step-web-card .step-web-url:hover { opacity: 0.9; text-decoration: underline; }
-
-/* ---------------------------------------------------------------------------
-   Skill card additions
---------------------------------------------------------------------------- */
-.step-skill-info {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
-.step-skill-loaded {
   font-size: 0.6rem;
-  color: var(--sc-faint);
-}
-
-/* ---------------------------------------------------------------------------
-   Callout body additions
---------------------------------------------------------------------------- */
-.step-warning-callout .callout-body,
-.step-error-callout   .callout-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.callout-stack {
-  font-size: 0.62rem;
-  color: var(--sc-dim);
-}
-
-.callout-stack summary {
-  cursor: pointer;
-  user-select: none;
-  font-family: var(--sc-mono);
-  font-weight: 500;
-  margin-bottom: 3px;
-  opacity: 0.7;
-}
-
-.callout-stack-pre {
-  font-family: var(--sc-mono);
-  font-size: 0.62rem;
   white-space: pre-wrap;
   word-break: break-all;
   margin: 3px 0 0;
-  padding: 6px 8px;
-  background: rgba(0,0,0,0.15);
+  padding: 5px 8px;
+  background: var(--pg-code-bg);
   border-radius: 3px;
-  max-height: 12em;
+  max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
-  color: var(--sc-dim);
-}
-.light-mode .callout-stack-pre { background: rgba(0,0,0,0.04); }
-
-/* ---------------------------------------------------------------------------
-   Info card
---------------------------------------------------------------------------- */
-.step-info-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  padding: 6px 0 2px;
-}
-
-.step-info-icon { display: none; }
-
-.step-info-text {
-  font-size: 0.7rem;
-  color: var(--sc-text);
-  opacity: 0.65;
-  word-break: break-word;
+  color: var(--pg-fg-dim);
   line-height: 1.5;
 }
+.light-mode .step-stack-pre { background: rgba(0,0,0,0.04); }
 
-/* ---------------------------------------------------------------------------
-   END card
---------------------------------------------------------------------------- */
-.step-end-card {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 0 2px;
-  flex-wrap: wrap;
-}
+/* ============================================================
+   COLLAPSED SUMMARY LINE  — injected into step-header
+   This is the key design detail:
+   On collapse → show a single graceful dimmed summary.
+   ============================================================ */
+/* Styles live in process-group.css as .step-summary-line */
 
-.step-end-icon { display: none; }
-
-.step-end-status {
-  font-size: 0.7rem;
-  font-weight: 500;
-  font-family: var(--sc-mono);
-  color: var(--sc-text);
-  opacity: 0.75;
-}
-
-.step-end-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
-  border: 1px solid var(--sc-border);
-  border-radius: 8px;
-  font-size: 0.6rem;
-  font-family: var(--sc-mono);
-  color: var(--sc-faint);
-  background: rgba(255,255,255,0.03);
-}
-.light-mode .step-end-chip { background: rgba(0,0,0,0.03); color: rgba(0,0,0,0.32); }
-
-.step-end-chip .material-symbols-outlined { font-size: 0.72rem; }
-
-/* ---------------------------------------------------------------------------
-   Responsive
---------------------------------------------------------------------------- */
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 640px) {
-  .step-editor-breadcrumb { display: none; }
-  .step-todo-tasks        { display: none; }
-  .step-tool-kvgrid       { display: none; }
+  .step-hl-sub    { display: none; }
+  .step-diff-block { max-height: 5em; }
+  .step-task-list  { display: none; }
 }
