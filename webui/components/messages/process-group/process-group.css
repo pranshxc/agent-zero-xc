@@ -1,57 +1,53 @@
-/* ===========================================
-   PROCESS GROUP — REDESIGNED
-   Polished, modern, per-tool-type cards
-   =========================================== */
+/* =============================================================================
+   process-group.css  —  Agent Zero XC
+   Clean, monochrome, Claude-style step UI.
+   Philosophy: structure via spacing + weight, never color.
+   ============================================================================= */
 
-/* ---- Entry animation ---- */
+/* ---- Animations ---- */
 @keyframes stepFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(3px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes pulse-step {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 0.9; }
+@keyframes spin3dot {
+  0%, 20%  { opacity: 0.15; }
+  50%      { opacity: 0.9;  }
+  80%,100% { opacity: 0.15; }
 }
-@keyframes shine {
-  to { background-position: -100% center; }
-}
-@keyframes skillPulse {
-  0%   { box-shadow: 0 0 0   0   rgba(163,230,53,0.4); }
-  60%  { box-shadow: 0 0 0   8px rgba(163,230,53,0);   }
-  100% { box-shadow: 0 0 0   0   rgba(163,230,53,0);   }
-}
-@keyframes genDots {
-  0%, 20%  { opacity: 0.2; }
-  50%      { opacity: 1;   }
-  80%,100% { opacity: 0.2; }
-}
-@keyframes shimmer {
+@keyframes shimmerMono {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
 }
 
-/* ---- CSS Variables (local to this component) ---- */
+/* ---- Local tokens ---- */
 .process-group {
-  --pg-radius: 8px;
-  --pg-radius-sm: 5px;
-  --pg-border: rgba(255,255,255,0.07);
-  --pg-bg: rgba(255,255,255,0.025);
-  --pg-bg-hover: rgba(255,255,255,0.04);
-  --pg-header-bg: rgba(255,255,255,0.03);
-  --pg-terminal-bg: #0d1117;
-  --pg-terminal-border: rgba(48,54,61,0.9);
-  --pg-terminal-header: #161b22;
-  --pg-gap: 6px;
+  /* dark */
+  --pg-bg:          transparent;
+  --pg-bg-hover:    rgba(255,255,255,0.025);
+  --pg-border:      rgba(255,255,255,0.08);
+  --pg-border-soft: rgba(255,255,255,0.05);
+  --pg-text:        rgba(255,255,255,0.82);
+  --pg-text-dim:    rgba(255,255,255,0.38);
+  --pg-text-faint:  rgba(255,255,255,0.22);
+  --pg-radius:      6px;
+  --pg-radius-sm:   4px;
+  --pg-gap:         4px;
+  --pg-mono:        var(--font-family-code, 'SF Mono', 'Fira Code', monospace);
+  --pg-term-bg:     #0d1117;
+  --pg-term-border: rgba(255,255,255,0.07);
+  --pg-term-header: rgba(255,255,255,0.035);
 }
 
 .light-mode .process-group {
-  --pg-border: rgba(0,0,0,0.09);
-  --pg-bg: rgba(0,0,0,0.02);
-  --pg-bg-hover: rgba(0,0,0,0.04);
-  --pg-header-bg: rgba(0,0,0,0.03);
-  --pg-terminal-bg: #f6f8fa;
-  --pg-terminal-border: #d0d7de;
-  --pg-terminal-header: #eaeef2;
+  --pg-bg-hover:    rgba(0,0,0,0.025);
+  --pg-border:      rgba(0,0,0,0.1);
+  --pg-border-soft: rgba(0,0,0,0.05);
+  --pg-text:        rgba(0,0,0,0.8);
+  --pg-text-dim:    rgba(0,0,0,0.38);
+  --pg-text-faint:  rgba(0,0,0,0.2);
+  --pg-term-bg:     #f6f8fa;
+  --pg-term-border: rgba(0,0,0,0.1);
+  --pg-term-header: rgba(0,0,0,0.04);
 }
 
 /* ---- Process Group wrapper ---- */
@@ -60,12 +56,11 @@
   flex-direction: column;
   position: relative;
   z-index: 1;
-  margin: var(--spacing-xs) 0;
-  padding: var(--spacing-xs) 0;
+  margin: 4px 0;
+  padding: 2px 0;
   min-width: 200px;
   max-width: 100%;
   box-sizing: border-box;
-  flex-shrink: 0;
 }
 
 .process-group.embedded {
@@ -73,7 +68,6 @@
   flex-direction: column;
   width: 100%;
   margin: 0;
-  border-radius: var(--pg-radius) var(--pg-radius) 0 0;
   background: transparent;
 }
 
@@ -93,42 +87,36 @@
 }
 
 /* ====================================================
-   PROCESS GROUP HEADER (collapsible session header)
+   GROUP HEADER
    ==================================================== */
 .process-group-header {
   display: flex;
   align-items: center;
-  padding: 7px 10px;
+  padding: 6px 10px;
   cursor: pointer;
   user-select: none;
   border-radius: var(--pg-radius);
-  background: var(--pg-header-bg);
   border: 1px solid var(--pg-border);
-  transition: background 0.15s ease, border-color 0.15s ease;
-  min-height: 32px;
+  background: var(--pg-bg);
+  transition: background 0.12s, border-color 0.12s;
+  min-height: 30px;
   gap: 7px;
-  white-space: nowrap;
 }
 
 .process-group-header:hover {
   background: var(--pg-bg-hover);
-  border-color: rgba(255,255,255,0.11);
 }
 
-.light-mode .process-group-header:hover {
-  border-color: rgba(0,0,0,0.14);
-}
-
-/* Chevron (replaces CSS border-triangle) */
+/* Chevron */
 .process-group-header .expand-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
-  transition: transform 0.22s ease;
-  opacity: 0.55;
+  transition: transform 0.2s ease;
+  opacity: 0.3;
 }
 .process-group-header .expand-icon::before {
   content: '';
@@ -136,106 +124,81 @@
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 4px 0 4px 6px;
+  border-width: 3.5px 0 3.5px 5.5px;
   border-color: transparent transparent transparent currentColor;
 }
-.process-group-header:hover .expand-icon { opacity: 0.85; }
+.process-group-header:hover .expand-icon { opacity: 0.55; }
 .process-group.expanded .process-group-header .expand-icon { transform: rotate(90deg); }
 
 .process-group-header .group-icon { display: none; }
 
 .process-group-header .group-title {
-  flex: 0 1 auto;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--color-text);
-  opacity: 0.9;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--pg-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 380px;
+  max-width: 360px;
   letter-spacing: 0.01em;
 }
 
-/* Step count badge */
+/* Step count */
 .process-group-header .step-count {
-  font-size: 0.62rem;
-  color: var(--color-text);
-  opacity: 0.45;
+  font-size: 0.6rem;
+  color: var(--pg-text-faint);
+  font-family: var(--pg-mono);
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
   flex-shrink: 0;
-  padding: 1px 6px;
-  font-family: var(--font-family-code);
-  background: rgba(255,255,255,0.06);
-  border-radius: 10px;
 }
-.light-mode .process-group-header .step-count {
-  background: rgba(0,0,0,0.05);
-}
+.light-mode .process-group-header .step-count { background: rgba(0,0,0,0.05); }
 
-/* Group status badge in header */
-.process-group-header .group-status {
-  margin-left: var(--spacing-xs);
-}
-
-/* Metrics row (time, tokens, duration) */
+/* Metrics */
 .process-group-header .group-metrics {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-left: auto;
-  font-size: 0.62rem;
-  font-family: var(--font-family-code);
-  color: var(--color-text);
-  opacity: 0.6;
-}
-
-.process-group-header .group-metrics .material-symbols-outlined {
-  font-size: 0.78rem;
-  opacity: 0.7;
-  vertical-align: middle;
+  font-size: 0.6rem;
+  font-family: var(--pg-mono);
+  color: var(--pg-text-faint);
 }
 
 .process-group-header .group-metrics span[class^="metric-"] {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 7px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  border: 1px solid var(--pg-border-soft);
 }
-
 .light-mode .process-group-header .group-metrics span[class^="metric-"] {
   background: rgba(0,0,0,0.04);
-  border-color: rgba(0,0,0,0.07);
 }
 
-.process-group-header .group-metrics .metric-notifications { font-weight: 600; }
+.process-group-header .group-metrics .material-symbols-outlined { font-size: 0.75rem; }
 .process-group-header .group-metrics .metric-notifications[hidden] { display: none; }
-.process-group-header .group-metrics .metric-notifications .material-symbols-outlined { opacity: 0.85; }
-
-/* Legacy hidden fields */
 .process-group-header .group-timestamp,
-.process-group-header .group-duration { display: none; }
+.process-group-header .group-duration,
+.process-group-header .group-status { display: none; }
 
 /* ====================================================
-   PROCESS GROUP CONTENT
+   GROUP CONTENT
    ==================================================== */
 .process-group-content {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
   margin-top: 0;
-  padding-top: 0;
-  border-top: 1px solid transparent;
   transition:
-    grid-template-rows 0.25s ease-out,
-    opacity           0.2s  ease-out,
-    margin-top        0.25s ease-out,
-    padding-top       0.25s ease-out,
-    border-color      0.2s  ease-out;
+    grid-template-rows 0.22s ease-out,
+    opacity 0.18s ease-out,
+    margin-top 0.22s ease-out;
   overflow: hidden;
-  color: var(--color-text-muted);
+  color: var(--pg-text);
   max-width: 100%;
 }
 
@@ -244,8 +207,7 @@
 .process-group.expanded .process-group-content {
   grid-template-rows: 1fr;
   opacity: 1;
-  margin-top: 6px;
-  padding-top: 4px;
+  margin-top: 5px;
 }
 
 /* ====================================================
@@ -261,7 +223,7 @@
 }
 
 /* ====================================================
-   INDIVIDUAL PROCESS STEP — base card
+   INDIVIDUAL STEP
    ==================================================== */
 .process-step {
   display: flex;
@@ -270,35 +232,24 @@
   border: 1px solid var(--pg-border);
   background: var(--pg-bg);
   overflow: hidden;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.12s, background 0.12s;
   max-width: 100%;
-  animation: stepFadeIn 0.18s ease-out both;
-  /* Left accent rail via border-left override per type */
-  border-left-width: 2px;
+  animation: stepFadeIn 0.15s ease-out both;
 }
 
-.process-step:hover {
-  background: var(--pg-bg-hover);
-}
+.process-step:hover { background: var(--pg-bg-hover); }
 
-/* ---- Step accent rail colors ---- */
-.process-step[data-type="agent"]        { border-left-color: #38bdf8; }
-.process-step[data-type="response"]     { border-left-color: #22c55e; }
-.process-step[data-type="tool"]         { border-left-color: #fbbf24; }
-.process-step[data-type="mcp"]          { border-left-color: #fbbf24; }
-.process-step[data-type="code_exe"]     { border-left-color: #ba68c8; }
-.process-step[data-type="browser"]      { border-left-color: #818cf8; }
-.process-step[data-type="subagent"],
-.process-step[data-type="delegation"]   { border-left-color: #14b8a6; }
-.process-step[data-type="warning"]      { border-left-color: #f97316; background: rgba(249,115,22,0.04); }
-.process-step[data-type="error"]        { border-left-color: #ef4444; background: rgba(239,68,68,0.05); }
-.process-step[data-type="skill"],
-.process-step[data-type="util"]         { border-left-color: #a3e635; }
-.process-step[data-type="info"]         { border-left-color: #94a3b8; }
-.process-step[data-type="hint"]         { border-left-color: #a3e635; }
+/* Remove all colored accent rails — neutral only */
+.process-step[data-type] { border-left: none; }
+
+/* WRN and ERR get a very subtle tint — not color, just depth */
+.process-step[data-type="warning"] { background: rgba(255,255,255,0.018); }
+.process-step[data-type="error"]   { background: rgba(255,255,255,0.022); }
+.light-mode .process-step[data-type="warning"],
+.light-mode .process-step[data-type="error"]  { background: rgba(0,0,0,0.018); }
 
 /* ====================================================
-   STEP HEADER (clickable row)
+   STEP HEADER
    ==================================================== */
 .process-step-header {
   display: flex;
@@ -306,25 +257,24 @@
   cursor: pointer;
   user-select: none;
   gap: 7px;
-  min-height: 32px;
+  min-height: 30px;
   max-width: 100%;
   overflow: hidden;
-  padding: 6px 10px 6px 8px;
+  padding: 5px 10px 5px 8px;
 }
 
-.process-step-header:hover { background: rgba(255,255,255,0.03); }
-.light-mode .process-step-header:hover { background: rgba(0,0,0,0.03); }
+.process-step-header:hover { background: var(--pg-bg-hover); }
 
-/* Step expand chevron */
+/* Step chevron */
 .process-step-header .step-expand-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
-  opacity: 0.35;
-  transition: transform 0.2s ease, opacity 0.15s ease;
+  opacity: 0.25;
+  transition: transform 0.18s ease, opacity 0.12s;
 }
 .process-step-header .step-expand-icon::before {
   content: '';
@@ -332,418 +282,132 @@
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 3px 0 3px 5px;
+  border-width: 3px 0 3px 4.5px;
   border-color: transparent transparent transparent currentColor;
 }
-.process-step-header:hover .step-expand-icon { opacity: 0.7; }
-.process-step.expanded > .process-step-header > .step-expand-icon { transform: rotate(90deg); }
+.process-step-header:hover .step-expand-icon { opacity: 0.5; }
+.process-step.expanded > .process-step-header .step-expand-icon { transform: rotate(90deg); }
 
-/* ---- Step badge (3-letter type pill) ---- */
+/* ---- Step badge ---- */
 .step-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 0.62rem;
-  font-weight: 700;
-  font-family: var(--font-family-code);
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  font-family: var(--pg-mono);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   flex-shrink: 0;
   line-height: 1;
-  border: 1px solid transparent;
+  /* monochrome: same border + muted text for all types */
+  border: 1px solid var(--pg-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--pg-text-dim);
+}
+.light-mode .step-badge {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.45);
 }
 
-/* ---- Badge icon ---- */
+/* Remove colorful per-type badge overrides */
+.process-group .GEN,
+.process-group .END,
+.process-group .USE,
+.process-group .MCP,
+.process-group .SUB,
+.process-group .RES,
+.process-group .EXE,
+.process-group .WWW,
+.process-group .WEB,
+.process-group .HDL,
+.process-group .INF,
+.process-group .HNT,
+.process-group .SKL,
+.process-group .WRN,
+.process-group .ERR,
+.process-group .UTL {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--pg-border);
+  color: var(--pg-text-dim);
+  --step-accent: var(--pg-text-dim);
+}
+.light-mode .process-group .GEN,
+.light-mode .process-group .END,
+.light-mode .process-group .USE,
+.light-mode .process-group .MCP,
+.light-mode .process-group .SUB,
+.light-mode .process-group .RES,
+.light-mode .process-group .EXE,
+.light-mode .process-group .WWW,
+.light-mode .process-group .WEB,
+.light-mode .process-group .HDL,
+.light-mode .process-group .INF,
+.light-mode .process-group .HNT,
+.light-mode .process-group .SKL,
+.light-mode .process-group .WRN,
+.light-mode .process-group .ERR,
+.light-mode .process-group .UTL {
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.1);
+  color: rgba(0,0,0,0.4);
+}
+
+/* Badge icon */
 .step-badge .badge-icon,
 .step-badge .material-symbols-outlined {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   line-height: 1;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 /* ---- Step title ---- */
 .process-step-header .step-title {
   flex: 1;
-  font-size: 0.78rem;
-  font-weight: 500;
+  font-size: 0.76rem;
+  font-weight: 400;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
-  color: var(--color-text);
-  opacity: 0.88;
+  color: var(--pg-text);
 }
 
-/* ---- Per-step timing chip ---- */
-.step-timing {
-  margin-left: auto;
-  font-size: 0.6rem;
-  font-family: var(--font-family-code);
-  color: var(--color-text);
-  opacity: 0.38;
-  padding: 1px 6px;
-  border-radius: 10px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-/* ====================================================
-   STATUS COLORS — accent variable + badge styling
-   ==================================================== */
-
-.process-group .GEN  { --step-accent: #38bdf8; background: rgba(56,189,248,0.08);  border-color: rgba(56,189,248,0.25);  color: #38bdf8; }
-.process-group .END  { --step-accent: #22c55e; background: rgba(34,197,94,0.08);   border-color: rgba(34,197,94,0.25);   color: #22c55e; }
-.process-group .USE  { --step-accent: #fbbf24; background: rgba(251,191,36,0.08);  border-color: rgba(251,191,36,0.25);  color: #fbbf24; }
-.process-group .MCP  { --step-accent: #fbbf24; background: rgba(251,191,36,0.08);  border-color: rgba(251,191,36,0.25);  color: #fbbf24; }
-.process-group .SUB  { --step-accent: #14b8a6; background: rgba(20,184,166,0.08);  border-color: rgba(20,184,166,0.25);  color: #14b8a6; }
-.process-group .RES  { --step-accent: #14b8a6; background: rgba(20,184,166,0.08);  border-color: rgba(20,184,166,0.25);  color: #14b8a6; }
-.process-group .EXE  { --step-accent: #ba68c8; background: rgba(186,104,200,0.08); border-color: rgba(186,104,200,0.25); color: #ba68c8; }
-.process-group .WWW  { --step-accent: #818cf8; background: rgba(129,140,248,0.08); border-color: rgba(129,140,248,0.25); color: #818cf8; }
-.process-group .WEB  { --step-accent: #818cf8; background: rgba(129,140,248,0.08); border-color: rgba(129,140,248,0.25); color: #818cf8; }
-.process-group .HDL  { --step-accent: #94a3b8; background: rgba(148,163,184,0.06); border-color: rgba(148,163,184,0.2);  color: #94a3b8; }
-.process-group .INF  { --step-accent: #94a3b8; background: rgba(148,163,184,0.06); border-color: rgba(148,163,184,0.2);  color: #94a3b8; }
-.process-group .HNT  { --step-accent: #a3e635; background: rgba(163,230,53,0.07);  border-color: rgba(163,230,53,0.22);  color: #a3e635; }
-.process-group .SKL  { --step-accent: #a3e635; background: rgba(163,230,53,0.07);  border-color: rgba(163,230,53,0.22);  color: #a3e635; }
-.process-group .WRN  { --step-accent: #f97316; background: rgba(249,115,22,0.08);  border-color: rgba(249,115,22,0.25);  color: #f97316; }
-.process-group .ERR  { --step-accent: #ef4444; background: rgba(239,68,68,0.09);   border-color: rgba(239,68,68,0.28);   color: #ef4444; }
-.process-group .UTL  { --step-accent: #64748b; background: rgba(100,116,139,0.06); border-color: rgba(100,116,139,0.18); color: #64748b; }
-
-/* Light-mode accent overrides */
-.light-mode .process-group .GEN  { --step-accent: #0284c7; }
-.light-mode .process-group .END  { --step-accent: #15803d; }
-.light-mode .process-group .USE  { --step-accent: #b45309; }
-.light-mode .process-group .MCP  { --step-accent: #b45309; }
-.light-mode .process-group .SUB  { --step-accent: #0f766e; }
-.light-mode .process-group .RES  { --step-accent: #0f766e; }
-.light-mode .process-group .EXE  { --step-accent: #7c3aed; }
-.light-mode .process-group .WWW  { --step-accent: #4f46e5; }
-.light-mode .process-group .WEB  { --step-accent: #4f46e5; }
-.light-mode .process-group .SKL  { --step-accent: #65a30d; }
-.light-mode .process-group .HNT  { --step-accent: #65a30d; }
-.light-mode .process-group .WRN  { --step-accent: #c2410c; }
-.light-mode .process-group .ERR  { --step-accent: var(--color-error-text); }
-
-/* Propagate accent to KV keys */
-.process-group .kvps-key { color: var(--step-accent); }
-
-/* ====================================================
-   STEP DETAIL — expand/collapse panel
-   ==================================================== */
-.process-step-detail {
-  grid-template-rows: 0fr;
-  opacity: 0;
-  margin-top: 0;
-  transition:
-    grid-template-rows 0.2s ease-out,
-    opacity            0.15s ease-out,
-    margin-top         0.2s ease-out;
-  overflow: hidden;
-  max-width: 100%;
-}
-
-.process-step-detail-content { white-space: pre-wrap; }
-
-.process-step-detail,
-.process-step-detail-scroll {
-  scrollbar-width: thin;
-  -ms-overflow-style: thin;
-}
-
-.process-step-detail::-webkit-scrollbar,
-.process-step-detail-scroll::-webkit-scrollbar {
-  width: thin;
-  height: thin;
-}
-
-.process-step:not(.expanded) > .process-step-detail {
-  margin-top: 0;
-}
-
-.process-step:not(.expanded) > .process-step-detail > .process-step-detail-scroll {
-  padding: 0;
-  margin-top: 0;
-  max-height: 0;
-  overflow: hidden;
-}
-
-.process-step-detail > .process-step-detail-scroll { min-height: 0; }
-
-.process-step.expanded > .process-step-detail {
-  opacity: 1;
-  overflow: hidden;
-  margin-top: 0;
-  max-width: 100%;
-  padding: 0 12px 10px 12px;
-}
-
-.process-step.expanded > .process-step-detail > .process-step-detail-scroll {
-  max-height: 40em;
-  overflow: auto;
-  max-width: 100%;
-  width: fit-content;
-  box-sizing: content-box;
-  border-radius: var(--pg-radius-sm);
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  -ms-overflow-style: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
-}
-
-.process-step-detail-scroll {
-  transition: max-height 0.2s ease-out, padding 0.2s ease-out, margin-top 0.2s ease-out;
-  padding: var(--spacing-xs) 0;
-  margin-top: var(--spacing-xxs);
-  background-color: transparent;
-  font-size: var(--font-size-xs);
-  line-height: 1.5;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-}
-
-/* ====================================================
-   KV PAIRS (tool arguments table)
-   ==================================================== */
-.process-step-detail-scroll .step-kvps {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--spacing-xs) var(--spacing-sm);
-  align-items: start;
-  padding: 8px 0 4px;
-}
-
-.process-step-detail-scroll .step-kvp { display: contents; }
-
-.process-step-detail-scroll .step-kvp-key {
-  color: var(--step-accent, var(--color-primary));
-  font-weight: 600;
-  font-size: 0.67rem;
-  opacity: 0.85;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  white-space: nowrap;
-  font-family: var(--font-family-code);
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  padding-right: 4px;
-}
-
-.process-step-detail-scroll .step-kvp-key .material-symbols-outlined {
-  font-size: 0.9rem;
-  color: var(--step-accent, var(--color-primary)) !important;
-}
-
-.process-step-detail-scroll .step-kvp-value {
-  opacity: 0.85;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  min-width: 0;
-  font-family: var(--font-family-code);
-}
-
-.process-step-detail-scroll .step-kvp-value p { margin: 0; word-break: break-word; overflow-wrap: anywhere; }
-
-/* ====================================================
-   TERMINAL OUTPUT — redesigned with chrome
-   ==================================================== */
-.process-step-detail .terminal-card {
-  margin: 8px 0 0 0;
-  border-radius: var(--pg-radius);
-  border: 1px solid var(--pg-terminal-border);
-  background: var(--pg-terminal-bg);
-  overflow: hidden;
-  min-width: 20em;
-  width: max-content;
-  max-width: 100%;
-}
-
-/* Terminal title bar */
-.process-step-detail .terminal-titlebar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
-  background: var(--pg-terminal-header);
-  border-bottom: 1px solid var(--pg-terminal-border);
-  user-select: none;
-}
-
-.process-step-detail .terminal-dots {
-  display: flex;
-  gap: 5px;
-  flex-shrink: 0;
-}
-
-.process-step-detail .terminal-dots span {
-  display: block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.process-step-detail .terminal-dots .dot-red    { background: #ff5f57; }
-.process-step-detail .terminal-dots .dot-yellow { background: #febc2e; }
-.process-step-detail .terminal-dots .dot-green  { background: #28c840; }
-
-.process-step-detail .terminal-path {
-  font-family: var(--font-family-code);
-  font-size: 0.68rem;
-  color: #8b949e;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.light-mode .process-step-detail .terminal-path { color: #57606a; }
-
-/* Exit code chip */
-.process-step-detail .terminal-exit {
-  font-family: var(--font-family-code);
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
-.process-step-detail .terminal-exit.exit-ok  { background: rgba(40,200,64,0.18);  color: #28c840; border: 1px solid rgba(40,200,64,0.3);  }
-.process-step-detail .terminal-exit.exit-err { background: rgba(255,95,87,0.15);  color: #ff5f57; border: 1px solid rgba(255,95,87,0.3);  }
-
-/* Copy button */
-.process-step-detail .terminal-copy-btn {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #8b949e;
-  font-size: 0.62rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-
-.process-step-detail .terminal-copy-btn:hover {
-  background: rgba(255,255,255,0.12);
-  color: #c9d1d9;
-}
-
-.light-mode .process-step-detail .terminal-copy-btn {
-  background: rgba(0,0,0,0.04);
-  border-color: rgba(0,0,0,0.1);
-  color: #57606a;
-}
-
-.light-mode .process-step-detail .terminal-copy-btn:hover {
-  background: rgba(0,0,0,0.08);
-  color: #24292f;
-}
-
-/* Command line shown in titlebar area */
-.process-step-detail .terminal-cmd {
-  padding: 7px 12px 4px;
-  font-family: var(--font-family-code);
-  font-size: 0.72rem;
-  color: #7ee787;
-  white-space: pre-wrap;
-  word-break: break-all;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  background: rgba(0,0,0,0.15);
-}
-
-.process-step-detail .terminal-cmd::before {
-  content: '$ ';
-  color: #58a6ff;
-  font-weight: 700;
-}
-
-.light-mode .process-step-detail .terminal-cmd {
-  color: #1a7f37;
-  background: rgba(0,0,0,0.03);
-  border-bottom-color: rgba(0,0,0,0.06);
-}
-.light-mode .process-step-detail .terminal-cmd::before { color: #0969da; }
-
-/* Output body */
-.process-step-detail .terminal-output-body {
-  padding: 10px 14px;
-  font-family: monospace;
-  font-size: 0.72rem;
-  color: #c9d1d9;
-  line-height: 1.55;
-  white-space: pre;
-  overflow-x: auto;
-  max-height: 22em;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
-}
-
-.process-step-detail .terminal-output-body::-webkit-scrollbar { width: 4px; height: 4px; }
-.process-step-detail .terminal-output-body::-webkit-scrollbar-track { background: transparent; }
-.process-step-detail .terminal-output-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
-.process-step-detail .terminal-output-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
-
-.light-mode .process-step-detail .terminal-output-body {
-  color: #24292f;
-  scrollbar-color: rgba(0,0,0,0.2) transparent;
-}
-.light-mode .process-step-detail .terminal-output-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
-.light-mode .process-step-detail .terminal-output-body::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.3); }
-
-/* Line count badge */
-.process-step-detail .terminal-line-count {
-  padding: 4px 12px;
-  font-family: var(--font-family-code);
-  font-size: 0.6rem;
-  color: #484f58;
-  border-top: 1px solid rgba(255,255,255,0.04);
-  text-align: right;
-}
-.light-mode .process-step-detail .terminal-line-count {
-  color: #8c959f;
-  border-top-color: rgba(0,0,0,0.05);
-}
-
-/* Legacy .terminal-output support (fallback if JS not updated yet) */
-.process-step-detail .terminal-output {
-  margin: var(--spacing-xs) 0 0 0;
-  padding: var(--spacing-xs);
-  background: rgba(0,0,0,0.8);
-  min-height: 5em;
-  min-width: 20em;
-  width: max-content;
-  border-radius: var(--pg-radius-sm);
-  color: #c9d1d9;
-  white-space: pre;
-  font-family: monospace;
-}
-.light-mode .process-step-detail .terminal-output { background: rgba(0,0,0,0.05); color: black; }
-
-/* ====================================================
-   GEN — AI THINKING CARD
-   ==================================================== */
-.process-step[data-type="agent"] .step-title.shiny-text {
-  background: linear-gradient(90deg,
-    rgba(56,189,248,0.5) 0%,
-    #38bdf8 40%,
-    rgba(56,189,248,0.5) 60%,
-    rgba(255,255,255,0.7) 80%,
-    rgba(56,189,248,0.5) 100%
+/* Active shimmer — monochrome (white shimmer on dark, dark on light) */
+.step-title.shiny-text {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.35) 0%,
+    rgba(255,255,255,0.9)  40%,
+    rgba(255,255,255,0.35) 60%,
+    rgba(255,255,255,0.6)  80%,
+    rgba(255,255,255,0.35) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
-  animation: shimmer 1.6s linear infinite;
+  animation: shimmerMono 1.8s linear infinite;
+}
+.light-mode .step-title.shiny-text {
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.3)  0%,
+    rgba(0,0,0,0.75) 40%,
+    rgba(0,0,0,0.3)  60%,
+    rgba(0,0,0,0.55) 80%,
+    rgba(0,0,0,0.3)  100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  animation: shimmerMono 1.8s linear infinite;
 }
 
-/* Thinking dots animation on active GEN steps */
+/* Thinking dots */
 .step-thinking-dots {
   display: inline-flex;
   gap: 3px;
@@ -752,157 +416,339 @@
 }
 .step-thinking-dots span {
   display: inline-block;
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  background: #38bdf8;
-  animation: genDots 1.2s infinite ease-in-out;
+  background: currentColor;
+  opacity: 0.3;
+  animation: spin3dot 1.2s infinite ease-in-out;
 }
-.step-thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
-.step-thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+.step-thinking-dots span:nth-child(2) { animation-delay: 0.18s; }
+.step-thinking-dots span:nth-child(3) { animation-delay: 0.36s; }
 
-/* Thought content card */
-.step-thought-card {
-  margin: 4px 0;
-  padding: 10px 12px;
-  background: rgba(56,189,248,0.05);
-  border-radius: var(--pg-radius-sm);
-  border: 1px solid rgba(56,189,248,0.12);
-  font-size: 0.75rem;
-  line-height: 1.6;
-  color: var(--color-text);
-  opacity: 0.9;
-  font-style: italic;
-}
-.light-mode .step-thought-card {
-  background: rgba(2,132,199,0.04);
-  border-color: rgba(2,132,199,0.14);
+/* Timing chip */
+.step-timing {
+  margin-left: auto;
+  font-size: 0.58rem;
+  font-family: var(--pg-mono);
+  color: var(--pg-text-faint);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* ====================================================
-   SKL — SKILL LOAD CARD
+   STEP DETAIL
    ==================================================== */
-.process-step[data-type="skill"],
-.process-step[data-type="util"][class*="skl"] {
-  animation: stepFadeIn 0.18s ease-out both, skillPulse 0.8s ease-out 0.18s 1;
+.process-step-detail {
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.15s ease-out;
 }
 
-.step-skill-card {
+.process-step:not(.expanded) > .process-step-detail > .process-step-detail-scroll {
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.process-step.expanded > .process-step-detail {
+  opacity: 1;
+  padding: 0 10px 10px 10px;
+}
+
+.process-step.expanded > .process-step-detail > .process-step-detail-scroll {
+  max-height: 40em;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+.light-mode .process-step.expanded > .process-step-detail > .process-step-detail-scroll {
+  scrollbar-color: rgba(0,0,0,0.12) transparent;
+}
+
+.process-step-detail-scroll {
+  padding: 6px 0;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--pg-text);
+}
+
+/* ====================================================
+   KV PAIRS
+   ==================================================== */
+.process-step-detail-scroll .step-kvps {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr);
+  gap: 5px 12px;
+  align-items: start;
+  padding: 6px 0 2px;
+}
+
+.process-step-detail-scroll .step-kvp { display: contents; }
+
+.process-step-detail-scroll .step-kvp-key {
+  font-weight: 500;
+  font-size: 0.64rem;
+  color: var(--pg-text-dim);
+  font-family: var(--pg-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: right;
+  padding-right: 4px;
+  white-space: nowrap;
+}
+
+.process-step-detail-scroll .step-kvp-value {
+  font-size: 0.72rem;
+  font-family: var(--pg-mono);
+  color: var(--pg-text);
+  opacity: 0.82;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+/* ====================================================
+   TERMINAL CARD  — monochrome refinement
+   ==================================================== */
+.process-step-detail .terminal-card {
+  margin: 6px 0 0;
+  border-radius: var(--pg-radius);
+  border: 1px solid var(--pg-term-border);
+  background: var(--pg-term-bg);
+  overflow: hidden;
+  width: max-content;
+  max-width: 100%;
+}
+
+.process-step-detail .terminal-titlebar {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 0 4px;
+  padding: 6px 12px;
+  background: var(--pg-term-header);
+  border-bottom: 1px solid var(--pg-term-border);
+  user-select: none;
 }
 
-.step-skill-icon {
-  font-size: 1.2rem;
-  flex-shrink: 0;
+.process-step-detail .terminal-dots { display: flex; gap: 5px; }
+.process-step-detail .terminal-dots span {
+  display: block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  /* Monochrome — just different grays */
 }
+.process-step-detail .terminal-dots .dot-red    { background: rgba(255,255,255,0.18); }
+.process-step-detail .terminal-dots .dot-yellow { background: rgba(255,255,255,0.28); }
+.process-step-detail .terminal-dots .dot-green  { background: rgba(255,255,255,0.38); }
+.light-mode .process-step-detail .terminal-dots .dot-red    { background: rgba(0,0,0,0.15); }
+.light-mode .process-step-detail .terminal-dots .dot-yellow { background: rgba(0,0,0,0.22); }
+.light-mode .process-step-detail .terminal-dots .dot-green  { background: rgba(0,0,0,0.32); }
+
+.process-step-detail .terminal-path {
+  font-family: var(--pg-mono);
+  font-size: 0.66rem;
+  color: var(--pg-text-faint);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.process-step-detail .terminal-exit {
+  font-family: var(--pg-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 8px;
+  border: 1px solid var(--pg-border);
+  background: rgba(255,255,255,0.05);
+  color: var(--pg-text-dim);
+}
+.light-mode .process-step-detail .terminal-exit {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.4);
+}
+
+.process-step-detail .terminal-copy-btn {
+  background: transparent;
+  border: 1px solid var(--pg-border);
+  color: var(--pg-text-faint);
+  font-size: 0.6rem;
+  padding: 1px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--pg-mono);
+  transition: background 0.12s, color 0.12s;
+}
+.process-step-detail .terminal-copy-btn:hover {
+  background: var(--pg-bg-hover);
+  color: var(--pg-text-dim);
+}
+
+.process-step-detail .terminal-cmd {
+  padding: 6px 12px 4px;
+  font-family: var(--pg-mono);
+  font-size: 0.7rem;
+  color: var(--pg-text);
+  opacity: 0.75;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-bottom: 1px solid var(--pg-term-border);
+}
+.process-step-detail .terminal-cmd::before {
+  content: '$ ';
+  color: var(--pg-text-faint);
+  font-weight: 600;
+}
+
+.process-step-detail .terminal-output-body {
+  padding: 10px 14px;
+  font-family: var(--pg-mono);
+  font-size: 0.7rem;
+  color: var(--pg-text);
+  opacity: 0.78;
+  line-height: 1.55;
+  white-space: pre;
+  overflow-x: auto;
+  max-height: 22em;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.process-step-detail .terminal-line-count {
+  padding: 4px 12px;
+  font-family: var(--pg-mono);
+  font-size: 0.58rem;
+  color: var(--pg-text-faint);
+  border-top: 1px solid var(--pg-term-border);
+  text-align: right;
+}
+
+/* Legacy fallback */
+.process-step-detail .terminal-output {
+  margin: 6px 0 0;
+  padding: 8px;
+  background: rgba(0,0,0,0.6);
+  min-height: 5em;
+  min-width: 20em;
+  width: max-content;
+  border-radius: var(--pg-radius-sm);
+  color: var(--pg-text);
+  opacity: 0.7;
+  white-space: pre;
+  font-family: var(--pg-mono);
+  font-size: 0.7rem;
+}
+.light-mode .process-step-detail .terminal-output { background: rgba(0,0,0,0.04); }
+
+/* ====================================================
+   SKL SKILL CARD
+   ==================================================== */
+.step-skill-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0 2px;
+}
+
+.step-skill-icon { font-size: 0; } /* hide emoji — use text only */
 
 .step-skill-name {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #a3e635;
-  font-family: var(--font-family-code);
+  font-size: 0.74rem;
+  font-weight: 500;
+  font-family: var(--pg-mono);
+  color: var(--pg-text);
+  opacity: 0.85;
 }
 
 .step-skill-target {
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: rgba(163,230,53,0.12);
-  border: 1px solid rgba(163,230,53,0.25);
-  color: #a3e635;
+  font-size: 0.58rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--pg-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--pg-text-dim);
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  font-family: var(--font-family-code);
+  font-family: var(--pg-mono);
+}
+.light-mode .step-skill-target {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.38);
 }
 
 /* ====================================================
-   WWW/WEB — BROWSER LINK CARD
+   WWW/WEB CARD
    ==================================================== */
 .step-web-card {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 8px 0 4px;
+  padding: 6px 0 2px;
   flex-wrap: wrap;
 }
 
-.step-web-icon {
-  font-size: 0.95rem;
-  flex-shrink: 0;
-  margin-top: 1px;
-  color: #818cf8;
-}
+.step-web-icon { display: none; }
 
 .step-web-url {
-  font-family: var(--font-family-code);
-  font-size: 0.72rem;
-  color: #818cf8;
+  font-family: var(--pg-mono);
+  font-size: 0.7rem;
+  color: var(--pg-text);
+  opacity: 0.65;
   text-decoration: none;
   word-break: break-all;
-  opacity: 0.9;
-  transition: opacity 0.15s;
 }
-
-.step-web-url:hover { opacity: 1; text-decoration: underline; }
+.step-web-url:hover { opacity: 0.9; text-decoration: underline; }
 
 .step-web-status {
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 10px;
-  font-family: var(--font-family-code);
+  font-size: 0.58rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--pg-border);
+  background: rgba(255,255,255,0.04);
+  color: var(--pg-text-dim);
+  font-family: var(--pg-mono);
   flex-shrink: 0;
 }
-
-.step-web-status.status-ok    { background: rgba(34,197,94,0.12);  color: #22c55e; border: 1px solid rgba(34,197,94,0.25);  }
-.step-web-status.status-redir { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
-.step-web-status.status-err   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25);  }
+.light-mode .step-web-status { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.38); }
 
 /* ====================================================
    WARNING / ERROR CALLOUT
    ==================================================== */
-.step-warning-callout {
-  display: flex;
-  gap: 10px;
-  padding: 10px 12px;
-  margin: 6px 0 2px;
-  border-radius: var(--pg-radius-sm);
-  background: rgba(249,115,22,0.07);
-  border: 1px solid rgba(249,115,22,0.22);
-  font-size: 0.75rem;
-  line-height: 1.55;
-  color: #f97316;
-}
-
+.step-warning-callout,
 .step-error-callout {
   display: flex;
-  gap: 10px;
-  padding: 10px 12px;
-  margin: 6px 0 2px;
+  gap: 8px;
+  padding: 8px 10px;
+  margin: 4px 0 2px;
   border-radius: var(--pg-radius-sm);
-  background: rgba(239,68,68,0.07);
-  border: 1px solid rgba(239,68,68,0.25);
-  font-size: 0.75rem;
-  line-height: 1.55;
-  color: #ef4444;
+  border: 1px solid var(--pg-border);
+  background: rgba(255,255,255,0.02);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--pg-text);
+}
+.light-mode .step-warning-callout,
+.light-mode .step-error-callout {
+  background: rgba(0,0,0,0.02);
 }
 
 .step-warning-callout .callout-icon,
 .step-error-callout   .callout-icon {
-  font-size: 1rem;
+  font-size: 0.78rem;
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
+  opacity: 0.55;
 }
 
 .step-warning-callout .callout-text,
 .step-error-callout   .callout-text {
-  flex: 1;
-  color: var(--color-text);
-  opacity: 0.9;
+  color: var(--pg-text);
+  opacity: 0.8;
   word-break: break-word;
   overflow-wrap: anywhere;
 }
@@ -911,29 +757,22 @@
    RESPONSE CONTENT
    ==================================================== */
 .process-step-detail-scroll .step-response-content {
-  font-size: 0.75rem;
+  font-size: 0.73rem;
   line-height: 1.6;
-  color: var(--color-text);
-  opacity: 0.9;
-  margin: var(--spacing-xs) 0;
+  color: var(--pg-text);
+  opacity: 0.85;
   word-break: break-word;
-  overflow-wrap: anywhere;
 }
+.process-step-detail-scroll .step-response-content p { margin: 0.4em 0; }
 
-.process-step-detail-scroll .step-response-content p  { margin: 0.5em 0; }
-.process-step-detail-scroll .step-response-content ul,
-.process-step-detail-scroll .step-response-content ol  { margin: 0.5em 0; padding-left: 1.5em; }
-
-/* Legacy warning content */
 .process-step-detail-scroll .step-warning-content {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   line-height: 1.5;
-  color: var(--color-warning);
-  opacity: 0.9;
-  margin: var(--spacing-xs) 0;
-  padding: var(--spacing-xs);
-  border-left: 2px solid var(--color-warning);
-  border-radius: 3px;
+  color: var(--pg-text);
+  opacity: 0.7;
+  margin: 4px 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--pg-border);
 }
 
 /* ====================================================
@@ -941,33 +780,16 @@
    ==================================================== */
 .process-step-detail-scroll .screenshot-img {
   max-width: 100%;
-  max-height: 400px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  transition: box-shadow 0.2s ease, filter 0.2s ease;
+  max-height: 380px;
+  border-radius: var(--pg-radius-sm);
+  border: 1px solid var(--pg-border);
   object-fit: contain;
-}
-
-.process-step-detail-scroll .screenshot-img:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  filter: brightness(1.02);
-}
-
-.light-mode .process-step-detail-scroll .screenshot-img {
-  border: 1px solid rgba(0,0,0,0.15);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* ====================================================
    STEP DETAIL ACTIONS
    ==================================================== */
-.step-detail-actions {
-  display: flex;
-  padding-left: 18px;
-  min-height: 0;
-}
-
+.step-detail-actions { display: flex; padding-left: 16px; min-height: 0; }
 .process-step:not(.expanded) > .process-step-detail > .step-detail-actions { display: none; }
 
 /* ====================================================
@@ -978,17 +800,14 @@
   grid-template-rows: 0fr;
   opacity: 0;
   overflow: hidden;
-  transition: grid-template-rows 0.25s ease-out, opacity 0.2s ease-out;
-  gap: 2px;
+  transition: grid-template-rows 0.22s ease-out, opacity 0.18s ease-out;
   max-width: 100%;
 }
-
 .process-step.expanded > .process-nested-container {
   grid-template-rows: 1fr;
   opacity: 1;
   margin-top: 2px;
 }
-
 .process-nested-inner {
   min-height: 0;
   display: flex;
@@ -996,64 +815,20 @@
   gap: var(--pg-gap);
   max-width: 100%;
   overflow: hidden;
-  /* Indent nested agents with a teal left guide line */
-  padding-left: 14px;
-  border-left: 2px solid rgba(20,184,166,0.25);
+  padding-left: 12px;
+  border-left: 1px solid var(--pg-border-soft);
   margin-left: 10px;
 }
-
-.nested-step .process-nested-container { margin-left: 0; }
 
 /* ====================================================
    COMPLETED GROUP
    ==================================================== */
-.process-group-completed { opacity: 0.97; }
-.process-group-completed .group-status { font-weight: 700; }
-.process-group-completed .expand-icon::before { border-left-color: #22c55e; }
-
-/* END badge gets glow pulse when group completes */
-.process-group-completed .END {
-  animation: skillPulse 0.9s ease-out 0s 1;
-}
-
-/* ====================================================
-   LIGHT MODE ADJUSTMENTS
-   ==================================================== */
-.light-mode .process-group.expanded .process-group-content { border-top-color: rgba(0,0,0,0.06); }
-.light-mode .process-step-detail-scroll { background-color: transparent; }
-.light-mode .process-group-header .group-title,
-.light-mode .process-step-header .step-title { color: var(--color-text-muted); }
-
-/* ====================================================
-   SHINY TEXT (generic)
-   ==================================================== */
-.step-title.shiny-text {
-  color: transparent !important;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: shine 1s linear infinite;
-}
+.process-group-completed { opacity: 1; }
 
 /* ====================================================
    RESPONSIVE
    ==================================================== */
 @media (max-width: 768px) {
-  .process-group {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .process-step-header .step-title { font-size: var(--font-size-xs); }
-  .process-step-detail-scroll { margin-left: 0; }
-
-  .process-step-detail .terminal-card { min-width: unset; width: 100%; }
+  .process-step-detail .terminal-card { width: 100%; }
   .process-step-detail .terminal-output-body { white-space: pre-wrap; }
 }
-
-/* ====================================================
-   PREFERENCES VISIBILITY
-   ==================================================== */
-/* Uncomment to hide utils/thoughts/json:
-.process-step.message-util { display: none; }
-.step-kvp.msg-thoughts { display: none; }
-.process-step-detail-scroll pre.msg-json { display: none; }
-*/
