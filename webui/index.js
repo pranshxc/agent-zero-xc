@@ -14,6 +14,7 @@ import { store as chatTopStore } from "/components/chat/top-section/chat-top-sto
 import { store as _tooltipsStore } from "/components/tooltips/tooltip-store.js";
 import { store as messageQueueStore } from "/components/chat/message-queue/message-queue-store.js";
 import { store as syncStore } from "/components/sync/sync-store.js"
+import { upgradeAllSteps, startStepObserver } from "/js/step-renderer.js";
 
 globalThis.fetchApi = api.fetchApi; // TODO - backward compatibility for non-modular scripts, remove once refactored to alpine
 
@@ -239,20 +240,6 @@ function adjustTextareaHeight() {
 
 export const sendJsonData = async function (url, data) {
   return await api.callJsonApi(url, data);
-  // const response = await api.fetchApi(url, {
-  //     method: 'POST',
-  //     headers: {
-  //         'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(data)
-  // });
-
-  // if (!response.ok) {
-  //     const error = await response.text();
-  //     throw new Error(error);
-  // }
-  // const jsonResponse = await response.json();
-  // return jsonResponse;
 };
 globalThis.sendJsonData = sendJsonData;
 
@@ -271,15 +258,6 @@ globalThis.getConnectionStatus = getConnectionStatus;
 
 function setConnectionStatus(connected) {
   chatTopStore.connected = connected;
-  // connectionStatus = connected;
-  // // Broadcast connection status without touching Alpine directly
-  // try {
-  //   window.dispatchEvent(
-  //     new CustomEvent("connection-status", { detail: { connected } })
-  //   );
-  // } catch (_e) {
-  //   // no-op
-  // }
 }
 
 let lastLogVersion = 0;
@@ -330,8 +308,6 @@ export async function applySnapshot(snapshot, options = {}) {
   if (snapCtx.skip) return { updated: false };
 
   // If the chat has been reset, reset cursors and request a resync from the caller.
-  // Note: on first snapshot after a context switch, lastLogGuid is intentionally empty,
-  // so the mismatch is expected and should not trigger a second state_request/poll.
   if (lastLogGuid != snapshot.log_guid) {
     if (lastLogGuid) {
       const chatHistoryEl = document.getElementById("chat-history");
@@ -380,7 +356,6 @@ export async function applySnapshot(snapshot, options = {}) {
 
   // Make sure the active context is properly selected in both lists
   if (context) {
-    // Update selection in both stores
     chatsStore.setSelected(context);
 
     const contextInChats = chatsStore.contains(context);
@@ -392,14 +367,12 @@ export async function applySnapshot(snapshot, options = {}) {
 
       if (!contextInChats && !contextInTasks) {
         if (chatsStore.contexts.length > 0) {
-          // If it doesn't exist in the list but other contexts do, fall back to the first
           const firstChatId = chatsStore.firstId();
           if (firstChatId) {
             setContext(firstChatId);
             chatsStore.setSelected(firstChatId);
           }
         } else if (typeof deselectChat === "function") {
-          // No contexts remain – clear state so the welcome screen can surface
           deselectChat();
         }
       }
@@ -415,7 +388,6 @@ export async function applySnapshot(snapshot, options = {}) {
 
 export async function poll() {
   try {
-    // Get timezone from navigator
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const log_from = lastLogVersion;
@@ -448,24 +420,16 @@ function speakMessages(logs) {
     skipOneSpeech = false;
     return;
   }
-  // log.no, log.type, log.heading, log.content
   for (let i = logs.length - 1; i >= 0; i--) {
     const log = logs[i];
 
-    // if already spoken, end
-    // if(log.no < lastSpokenNo) break;
-
-    // finished response
     if (log.type == "response") {
-      // lastSpokenNo = log.no;
       speechStore.speakStream(
         getChatBasedId(log.no),
         log.content,
         log.kvps?.finished
       );
       return;
-
-      // finished LLM headline, not response
     } else if (
       log.type == "agent" &&
       log.kvps &&
@@ -473,7 +437,6 @@ function speakMessages(logs) {
       log.kvps.tool_args &&
       log.kvps.tool_name != "response"
     ) {
-      // lastSpokenNo = log.no;
       speechStore.speakStream(getChatBasedId(log.no), log.kvps.headline, true);
       return;
     }
@@ -483,14 +446,11 @@ function speakMessages(logs) {
 function updateProgress(progress, active) {
   if (!progress) progress = "";
 
-  // Strip HTML tags for plain-text placeholder use
   const plainText = progress.replace(/<[^>]*>/g, "").trim();
 
-  // Update the input store so the placeholder reflects progress
   inputStore.progressText = plainText;
   inputStore.progressActive = !!active;
 
-  // Apply shimmer class to the textarea when active
   const chatInputEl = document.getElementById("chat-input");
   if (chatInputEl) {
     if (active && plainText) {
@@ -500,7 +460,6 @@ function updateProgress(progress, active) {
     }
   }
 
-  // Also update legacy progress bar element if it still exists
   const progressBarEl = document.getElementById("progress-bar");
   if (progressBarEl) {
     setProgressBarShine(progressBarEl, active);
@@ -543,25 +502,18 @@ globalThis.newContext = newContext;
 export const setContext = function (id) {
   if (id == context) return;
   context = id;
-  // Always reset the log tracking variables when switching contexts
-  // This ensures we get fresh data from the backend
   lastLogGuid = "";
   lastLogVersion = 0;
   lastSpokenNo = 0;
 
-  // Stop speech when switching chats
   speechStore.stopAudio();
 
-  // Clear the chat history immediately to avoid showing stale content
   const chatHistoryEl = document.getElementById("chat-history");
   if (chatHistoryEl) chatHistoryEl.innerHTML = "";
 
-  // Update both selected states using stores
   chatsStore.setSelected(id);
   tasksStore.setSelected(id);
 
-  // Trigger a new WS handshake for the newly selected context (push-based sync).
-  // This keeps the UI current without needing /poll during healthy operation.
   try {
     if (typeof syncStore.sendStateRequest === "function") {
       syncStore.sendStateRequest({ forceFull: true }).catch((error) => {
@@ -572,10 +524,8 @@ export const setContext = function (id) {
     // no-op: sync store may not be initialized yet
   }
 
-  //skip one speech if enabled when switching context
   if (preferencesStore.speech) skipOneSpeech = true;
 
-  // Focus the chat input
   if (id) {
     setTimeout(() => {
       inputStore.focus();
@@ -584,14 +534,11 @@ export const setContext = function (id) {
 };
 
 export const deselectChat = function () {
-  // Clear current context to show welcome screen
   setContext(null);
 
-  // Clear selections so we don't auto-restore
   sessionStorage.removeItem("lastSelectedChat");
   sessionStorage.removeItem("lastSelectedTask");
 
-  // Clear the chat history
   chatHistory.innerHTML = "";
 };
 globalThis.deselectChat = deselectChat;
@@ -620,10 +567,8 @@ export function justToast(text, type = "info", timeout = 5000, group = "") {
 globalThis.justToast = justToast;
 
 export function toast(text, type = "info", timeout = 5000) {
-  // Convert timeout from milliseconds to seconds for new notification system
-  const display_time = Math.max(timeout / 1000, 1); // Minimum 1 second
+  const display_time = Math.max(timeout / 1000, 1);
 
-  // Use new frontend notification system based on type
   switch (type.toLowerCase()) {
     case "error":
       return notificationStore.frontendError(text, "Error", display_time);
@@ -642,16 +587,7 @@ globalThis.toast = toast;
 import { store as _chatNavigationStore } from "/components/chat/navigation/chat-navigation-store.js";
 
 
-// Navigation logic in chat-navigation-store.js
-// forceScrollChatToBottom is kept here as it is used by system events
-
-
-// setInterval(poll, 250);
-
 async function startPolling() {
-  // Fallback polling cadence:
-  // - DISCONNECTED: do not poll (transport down, avoid request spam)
-  // - HANDSHAKE_PENDING/DEGRADED: steady fallback cadence to keep UI responsive
   const degradedIntervalMs = 250;
   let missingSyncSinceMs = null;
   let consecutivePollFailures = 0;
@@ -666,10 +602,6 @@ async function startPolling() {
 
     try {
       const syncMode = typeof syncStore.mode === "string" ? syncStore.mode : null;
-      // Polling is a fallback. In V1:
-      // - DEGRADED: poll at fallback cadence to keep the UI usable while WS sync is unavailable.
-      // - DISCONNECTED: do not poll; rely on Socket.IO reconnect and avoid console/network spam.
-      // Safety net: if the sync store never loads, start polling after a short grace period.
       if (!syncStore || !syncMode) {
         if (missingSyncSinceMs == null) {
           missingSyncSinceMs = Date.now();
@@ -691,15 +623,11 @@ async function startPolling() {
         return;
       }
 
-      // Avoid a “single poll on boot” while the websocket handshake is racing to take over.
       if (Date.now() - startedAtMs < initialNoPollGraceMs && (!syncStore || !syncMode)) {
         setTimeout(_doPoll.bind(this), nextInterval);
         return;
       }
 
-      // Call through `globalThis.poll` so test harnesses (and future instrumentation)
-      // can wrap/spy on polling behaviour. Fall back to the module-local function
-      // if the global is unavailable.
       const pollFn = typeof globalThis.poll === "function" ? globalThis.poll : poll;
       pollInFlight = true;
       let result;
@@ -716,7 +644,6 @@ async function startPolling() {
         consecutivePollFailures = 0;
       }
 
-      // If we are degraded but polling repeatedly fails, upgrade to DISCONNECTED.
       if (
         syncStore &&
         syncMode === "DEGRADED" &&
@@ -726,7 +653,6 @@ async function startPolling() {
         syncStore.mode = "DISCONNECTED";
       }
 
-      // If we're polling and the backend responds, try to re-establish push sync immediately.
       if (syncStore && pollOk) {
         const now = Date.now();
         const modeNow = typeof syncStore.mode === "string" ? syncStore.mode : null;
@@ -751,7 +677,6 @@ async function startPolling() {
       console.error("Error:", error);
     }
 
-    // Call the function again after the selected interval
     const elapsedMs = Date.now() - tickStartedAt;
     const delayMs = Math.max(0, nextInterval - elapsedMs);
     setTimeout(_doPoll.bind(this), delayMs);
@@ -762,7 +687,6 @@ async function startPolling() {
 
 // All initializations and event listeners are now consolidated here
 document.addEventListener("DOMContentLoaded", function () {
-  // Assign DOM elements to variables now that the DOM is ready
   leftPanel = document.getElementById("left-panel");
   rightPanel = document.getElementById("right-panel");
   container = document.querySelector(".container");
@@ -775,6 +699,9 @@ document.addEventListener("DOMContentLoaded", function () {
   autoScrollSwitch = document.getElementById("auto-scroll-switch");
   timeDate = document.getElementById("time-date-container");
 
+  // Start step renderer — upgrades existing + watches for new steps
+  upgradeAllSteps();
+  startStepObserver();
 
   // Start polling for updates
   startPolling();
