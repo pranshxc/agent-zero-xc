@@ -1,0 +1,242 @@
+/* =============================================================================
+   xc-redesign.css — Agent Zero XC
+   Global UI overhaul: dark deep-space theme, refined layout, persistent steps
+   Import this AFTER index.css to override defaults
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   GLOBAL REDESIGN TOKENS
+   ============================================================ */
+.dark-mode {
+  /* Deep space background */
+  --color-bg:              #080810;
+  --color-panel:           #0e0e18;
+  --color-chat-background: #080810;
+  --color-border:          rgba(255,255,255,0.07);
+  --color-text:            #dde1f0;
+  --color-text-muted:      #6b6f85;
+  --color-primary:         #7c83fd;
+
+  /* Message bubble */
+  --color-message-bg:      #10101a;
+
+  /* Sidebar */
+  --sidebar-bg:            #0c0c16;
+  --sidebar-border:        rgba(255,255,255,0.06);
+
+  /* Accent */
+  --xc-accent:             #7c83fd;
+  --xc-accent-glow:        rgba(124,131,253,0.25);
+  --xc-green:              #57d9a3;
+  --xc-amber:              #e9c46a;
+  --xc-red:                #ff6b6b;
+
+  /* Font */
+  --font-family-main:      'Inter', -apple-system, sans-serif;
+  --font-family-code:      'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================================
+   BODY & CONTAINER
+   ============================================================ */
+body.dark-mode {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family-main);
+}
+
+.container {
+  background: var(--color-bg);
+}
+
+/* ============================================================
+   CHAT HISTORY — full-height feed
+   ============================================================ */
+#chat-history {
+  background: var(--color-chat-background) !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+/* ============================================================
+   USER MESSAGE BUBBLE — clean pill style
+   ============================================================ */
+.message-user .message-text {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+  border: 1px solid rgba(124,131,253,0.2) !important;
+  border-radius: 14px 14px 4px 14px !important;
+  color: #dde1f0 !important;
+  font-size: 13.5px !important;
+  line-height: 1.65 !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* ============================================================
+   AGENT RESPONSE — clean, spacious
+   ============================================================ */
+.message-agent-response .msg-content {
+  font-size: 14px !important;
+  line-height: 1.75 !important;
+  color: var(--color-text) !important;
+}
+
+/* ============================================================
+   STEP EXECUTION HEADER — process group section header
+   Now shows as a pinned "session" tab
+   ============================================================ */
+.process-group-header .group-title {
+  color: var(--color-text) !important;
+}
+
+/* ============================================================
+   CODE BLOCKS in agent responses
+   ============================================================ */
+.msg-content pre,
+.msg-content code {
+  font-family: var(--font-family-code) !important;
+  font-size: 12px !important;
+}
+.msg-content .code-block-wrapper {
+  border-radius: 6px !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  background: #0a0a0f !important;
+}
+
+/* ============================================================
+   CHAT INPUT BAR — glassy bottom bar
+   ============================================================ */
+#input-section,
+.chat-input-section,
+[id*="chat-bar"],
+.chat-bar {
+  background: rgba(14,14,24,0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+}
+
+/* ============================================================
+   STEP EXECUTION TIMELINE
+   Visual cue: steps flow downward like a log
+   ============================================================ */
+
+/* The process group outer shell */
+.process-group {
+  --pg-bg-canvas: #080810 !important;
+  --pg-bg-panel:  #0e0e18 !important;
+  --pg-bg-step:   #10101c !important;
+  --pg-bg-detail: #0c0c16 !important;
+  --pg-bg-terminal: #060608 !important;
+  --pg-bg-code:     #08080e !important;
+  --pg-border:    rgba(255,255,255,0.07) !important;
+  --pg-border-md: rgba(255,255,255,0.11) !important;
+}
+
+/* ============================================================
+   PERSISTENT STEP — override any collapsing from old CSS
+   Every step's detail panel is always visible
+   ============================================================ */
+.process-step > .process-step-detail {
+  display: block !important;
+  opacity: 1 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+.process-step > .process-step-detail > .process-step-detail-scroll {
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 10px 12px 12px 16px !important;
+}
+
+/* ============================================================
+   STEP NUMBER badge — sequential step counter
+   ============================================================ */
+.step-icon-wrap::after {
+  content: attr(data-step-num);
+  position: absolute;
+  top: 3px; right: 1px;
+  font-size: 8px;
+  font-family: var(--az-mono, monospace);
+  font-weight: 700;
+  color: var(--pg-text-dim);
+  line-height: 1;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS — minimal snackbar style
+   ============================================================ */
+.toast {
+  background: #1a1a2e !important;
+  border: 1px solid rgba(124,131,253,0.25) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+  font-family: var(--font-family-main) !important;
+}
+
+/* ============================================================
+   SCROLLBARS — thin dark style
+   ============================================================ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+*::-webkit-scrollbar { width: 5px; height: 5px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+::selection {
+  background: rgba(124,131,253,0.3);
+  color: #fff;
+}
+
+/* ============================================================
+   STEP ANIMATIONS — stagger entry
+   ============================================================ */
+.process-step:nth-child(1)  { animation-delay: 0ms; }
+.process-step:nth-child(2)  { animation-delay: 30ms; }
+.process-step:nth-child(3)  { animation-delay: 60ms; }
+.process-step:nth-child(4)  { animation-delay: 90ms; }
+.process-step:nth-child(5)  { animation-delay: 120ms; }
+.process-step:nth-child(6)  { animation-delay: 150ms; }
+.process-step:nth-child(7)  { animation-delay: 180ms; }
+.process-step:nth-child(8)  { animation-delay: 210ms; }
+.process-step:nth-child(9)  { animation-delay: 240ms; }
+.process-step:nth-child(10) { animation-delay: 270ms; }
+
+/* ============================================================
+   THOUGHT BLOCK — reasoning is prominent, not hidden
+   ============================================================ */
+.az-card-think .az-think-body {
+  border-left-color: rgba(229,192,123,0.5) !important;
+  font-style: italic;
+}
+
+/* ============================================================
+   RUNNING STEP — animated left border
+   ============================================================ */
+@keyframes xc-run-pulse {
+  0%,100% { border-left-color: rgba(233,196,106,0.2); }
+  50%     { border-left-color: rgba(233,196,106,0.6); }
+}
+.process-step.step-running {
+  animation: xc-run-pulse 1.8s ease-in-out infinite !important;
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDE
+   ============================================================ */
+@media (max-width: 768px) {
+  .process-step > .process-step-detail > .process-step-detail-scroll {
+    padding: 8px 10px 10px 12px !important;
+  }
+}
