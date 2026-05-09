@@ -1,0 +1,719 @@
+/* =============================================================================
+   step-cards.css  —  Agent Zero XC
+   Rich per-tool card styles for the agentic step renderer.
+   Imports: included via index.html after process-group.css
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Shared card base
+--------------------------------------------------------------------------- */
+.step-tool-card,
+.step-todo-card,
+.step-editor-card,
+.step-search-card,
+.step-sub-card,
+.step-end-card,
+.step-info-card {
+  margin: 6px 0 2px;
+  border-radius: 7px;
+  overflow: hidden;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+   GEN — Thought bubble
+--------------------------------------------------------------------------- */
+/* Already defined in process-group.css (.step-thought-card) */
+
+/* ---------------------------------------------------------------------------
+   END — Completion summary
+--------------------------------------------------------------------------- */
+.step-end-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.18);
+}
+
+.step-end-icon { font-size: 1rem; flex-shrink: 0; }
+
+.step-end-status {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.step-end-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 20px;
+  font-size: 0.62rem;
+  font-family: var(--font-family-code);
+  color: #22c55e;
+}
+
+.step-end-chip .material-symbols-outlined {
+  font-size: 0.78rem;
+}
+
+.light-mode .step-end-card {
+  background: rgba(21,128,61,0.05);
+  border-color: rgba(21,128,61,0.18);
+}
+
+/* ---------------------------------------------------------------------------
+   USE / MCP — Generic tool call card
+--------------------------------------------------------------------------- */
+.step-tool-card {
+  background: rgba(251,191,36,0.04);
+  border: 1px solid rgba(251,191,36,0.14);
+}
+
+.step-tool-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(251,191,36,0.1);
+  flex-wrap: wrap;
+}
+
+.step-tool-icon { font-size: 1rem; flex-shrink: 0; }
+
+.step-tool-name {
+  font-weight: 700;
+  font-family: var(--font-family-code);
+  font-size: 0.76rem;
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.step-tool-action {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.22);
+  color: #fbbf24;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--font-family-code);
+  flex-shrink: 0;
+}
+
+.step-tool-status {
+  margin-left: auto;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-family: var(--font-family-code);
+  flex-shrink: 0;
+}
+
+.tool-status-running {
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.28);
+  color: #fbbf24;
+  animation: pulse-step 1.2s ease-in-out infinite;
+}
+
+.tool-status-done {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.22);
+  color: #22c55e;
+}
+
+.step-tool-kvgrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  padding: 8px 12px;
+  align-items: start;
+}
+
+.step-tool-kvrow { display: contents; }
+
+.step-tool-kvkey {
+  font-family: var(--font-family-code);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #fbbf24;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  text-align: right;
+  padding-right: 4px;
+}
+
+.step-tool-kvval {
+  font-family: var(--font-family-code);
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.85;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* ---------------------------------------------------------------------------
+   TODO manager
+--------------------------------------------------------------------------- */
+.step-todo-card {
+  background: rgba(251,191,36,0.04);
+  border: 1px solid rgba(251,191,36,0.14);
+}
+
+.step-todo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  flex-wrap: wrap;
+}
+
+.step-todo-icon { font-size: 1rem; flex-shrink: 0; }
+
+.step-todo-tool {
+  font-weight: 700;
+  font-family: var(--font-family-code);
+  font-size: 0.72rem;
+  color: #fbbf24;
+}
+
+.step-todo-action {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-family: var(--font-family-code);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  flex-shrink: 0;
+}
+
+.todo-complete {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.22);
+  color: #22c55e;
+}
+.todo-add {
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.22);
+  color: #38bdf8;
+}
+.todo-remove {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.22);
+  color: #ef4444;
+}
+.todo-update {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.22);
+  color: #fbbf24;
+}
+.todo-default {
+  background: rgba(148,163,184,0.08);
+  border: 1px solid rgba(148,163,184,0.18);
+  color: #94a3b8;
+}
+
+.step-todo-taskid {
+  font-family: var(--font-family-code);
+  font-size: 0.62rem;
+  color: var(--color-text);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.step-todo-remaining {
+  margin-left: auto;
+  font-family: var(--font-family-code);
+  font-size: 0.62rem;
+  color: var(--color-text);
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.step-todo-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  margin: 0 12px 8px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.step-todo-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fbbf24, #22c55e);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  min-width: 5%;
+}
+
+.step-todo-tasks {
+  padding: 0 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.todo-task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.todo-task-id {
+  font-family: var(--font-family-code);
+  font-size: 0.6rem;
+  color: #fbbf24;
+  opacity: 0.7;
+  flex-shrink: 0;
+  padding-top: 1px;
+  min-width: 2.5em;
+}
+
+.todo-task-text {
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.75;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.light-mode .todo-task-row { border-top-color: rgba(0,0,0,0.05); }
+
+/* ---------------------------------------------------------------------------
+   Text editor card
+--------------------------------------------------------------------------- */
+.step-editor-card {
+  background: rgba(163,230,53,0.04);
+  border: 1px solid rgba(163,230,53,0.14);
+}
+
+.step-editor-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(163,230,53,0.1);
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.step-editor-icon { font-size: 1rem; flex-shrink: 0; }
+
+.step-editor-op {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-family-code);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.editor-op-read {
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.22);
+  color: #38bdf8;
+}
+.editor-op-write {
+  background: rgba(163,230,53,0.1);
+  border: 1px solid rgba(163,230,53,0.22);
+  color: #a3e635;
+}
+
+.step-editor-breadcrumb {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-family-code);
+  font-size: 0.68rem;
+  color: var(--color-text);
+  opacity: 0.65;
+  overflow: hidden;
+  min-width: 0;
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.editor-crumb {
+  color: var(--color-text);
+  opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editor-crumb-file {
+  color: #a3e635;
+  opacity: 1;
+  font-weight: 600;
+}
+
+.editor-crumb-sep {
+  opacity: 0.3;
+  margin: 0 1px;
+}
+
+.step-editor-lang {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(163,230,53,0.1);
+  border: 1px solid rgba(163,230,53,0.2);
+  color: #a3e635;
+  font-family: var(--font-family-code);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.step-editor-preview {
+  padding: 8px 12px;
+  margin: 0;
+  font-family: var(--font-family-code);
+  font-size: 0.68rem;
+  color: var(--color-text);
+  opacity: 0.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  border-top: 1px solid rgba(163,230,53,0.07);
+  overflow: hidden;
+  max-height: 8em;
+}
+
+.step-editor-diff {
+  padding: 6px 0 4px;
+  font-family: var(--font-family-code);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  overflow: hidden;
+  max-height: 12em;
+}
+
+.diff-line {
+  padding: 1px 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.diff-add {
+  background: rgba(34,197,94,0.08);
+  color: #7ee787;
+  border-left: 2px solid #22c55e;
+}
+
+.diff-del {
+  background: rgba(239,68,68,0.08);
+  color: #ff7b72;
+  border-left: 2px solid #ef4444;
+}
+
+.diff-ctx {
+  color: var(--color-text);
+  opacity: 0.45;
+}
+
+/* ---------------------------------------------------------------------------
+   Search engine card
+--------------------------------------------------------------------------- */
+.step-search-card {
+  background: rgba(129,140,248,0.04);
+  border: 1px solid rgba(129,140,248,0.14);
+  padding: 8px 12px;
+}
+
+.step-search-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.step-search-icon { font-size: 0.9rem; flex-shrink: 0; }
+
+.step-search-label {
+  font-weight: 700;
+  font-family: var(--font-family-code);
+  font-size: 0.72rem;
+  color: #818cf8;
+}
+
+.step-search-engine {
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(129,140,248,0.1);
+  border: 1px solid rgba(129,140,248,0.2);
+  color: #818cf8;
+  font-family: var(--font-family-code);
+  text-transform: uppercase;
+}
+
+.step-search-query {
+  font-size: 0.76rem;
+  font-style: italic;
+  color: var(--color-text);
+  opacity: 0.8;
+  padding: 4px 2px;
+  word-break: break-word;
+}
+
+/* ---------------------------------------------------------------------------
+   Sub-agent / delegation card
+--------------------------------------------------------------------------- */
+.step-sub-card {
+  background: rgba(20,184,166,0.04);
+  border: 1px solid rgba(20,184,166,0.14);
+  padding: 8px 12px;
+}
+
+.step-sub-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.step-sub-icon { font-size: 1rem; flex-shrink: 0; }
+
+.step-sub-label {
+  font-size: 0.68rem;
+  color: var(--color-text);
+  opacity: 0.55;
+}
+
+.step-sub-name {
+  font-weight: 700;
+  font-family: var(--font-family-code);
+  font-size: 0.74rem;
+  color: #14b8a6;
+}
+
+.step-sub-task {
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.7;
+  padding: 4px 0 2px;
+  word-break: break-word;
+  border-top: 1px solid rgba(20,184,166,0.1);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+   Web card (extended)
+--------------------------------------------------------------------------- */
+.step-web-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px 4px;
+}
+
+.step-web-favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.step-web-domain {
+  font-weight: 700;
+  font-family: var(--font-family-code);
+  font-size: 0.74rem;
+  color: #818cf8;
+  flex-shrink: 0;
+}
+
+.step-web-card .step-web-url {
+  display: block;
+  padding: 3px 12px 8px;
+  font-family: var(--font-family-code);
+  font-size: 0.66rem;
+  color: #818cf8;
+  opacity: 0.7;
+  text-decoration: none;
+  word-break: break-all;
+  transition: opacity 0.15s;
+}
+
+.step-web-card .step-web-url:hover { opacity: 1; text-decoration: underline; }
+
+/* ---------------------------------------------------------------------------
+   Skill card (extended)
+--------------------------------------------------------------------------- */
+.step-skill-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(163,230,53,0.05);
+  border: 1px solid rgba(163,230,53,0.16);
+  border-radius: 7px;
+  margin: 4px 0;
+}
+
+.step-skill-icon { font-size: 1.3rem; flex-shrink: 0; }
+
+.step-skill-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.step-skill-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #a3e635;
+  font-family: var(--font-family-code);
+}
+
+.step-skill-loaded {
+  font-size: 0.65rem;
+  color: var(--color-text);
+  opacity: 0.4;
+}
+
+.step-skill-target {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(163,230,53,0.12);
+  border: 1px solid rgba(163,230,53,0.25);
+  color: #a3e635;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: var(--font-family-code);
+}
+
+/* ---------------------------------------------------------------------------
+   Callout cards (extended — body layout)
+--------------------------------------------------------------------------- */
+.step-warning-callout .callout-body,
+.step-error-callout   .callout-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.callout-stack {
+  font-size: 0.65rem;
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.callout-stack summary {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.callout-stack-pre {
+  font-family: var(--font-family-code);
+  font-size: 0.65rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 4px 0 0;
+  padding: 6px 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  max-height: 12em;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.light-mode .callout-stack-pre { background: rgba(0,0,0,0.06); }
+
+/* ---------------------------------------------------------------------------
+   Info card
+--------------------------------------------------------------------------- */
+.step-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(148,163,184,0.04);
+  border: 1px solid rgba(148,163,184,0.12);
+  border-radius: 7px;
+  margin: 4px 0;
+}
+
+.step-info-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+
+.step-info-text {
+  font-size: 0.72rem;
+  color: var(--color-text);
+  opacity: 0.7;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------------
+   step-type-end (body class on the step wrapper)
+--------------------------------------------------------------------------- */
+.process-step.step-type-end {
+  border-left-color: #22c55e;
+  background: rgba(34,197,94,0.03);
+}
+
+/* ---------------------------------------------------------------------------
+   Light mode tweaks
+--------------------------------------------------------------------------- */
+.light-mode .step-tool-card,
+.light-mode .step-todo-card  { background: rgba(180,83,9,0.03);   border-color: rgba(180,83,9,0.12); }
+.light-mode .step-tool-name,
+.light-mode .step-todo-tool  { color: #b45309; }
+.light-mode .step-tool-action { background: rgba(180,83,9,0.08); border-color: rgba(180,83,9,0.18); color: #b45309; }
+.light-mode .step-tool-kvkey  { color: #b45309; }
+
+.light-mode .step-editor-card { background: rgba(101,163,13,0.03); border-color: rgba(101,163,13,0.12); }
+.light-mode .editor-crumb-file { color: #4d7c0f; }
+.light-mode .step-editor-lang { background: rgba(101,163,13,0.08); border-color: rgba(101,163,13,0.18); color: #4d7c0f; }
+.light-mode .editor-op-write   { background: rgba(101,163,13,0.08); border-color: rgba(101,163,13,0.18); color: #4d7c0f; }
+
+.light-mode .step-search-card  { background: rgba(79,70,229,0.03); border-color: rgba(79,70,229,0.12); }
+.light-mode .step-search-label { color: #4f46e5; }
+.light-mode .step-web-domain   { color: #4f46e5; }
+.light-mode .step-web-card .step-web-url { color: #4f46e5; }
+
+.light-mode .step-sub-card  { background: rgba(15,118,110,0.03); border-color: rgba(15,118,110,0.12); }
+.light-mode .step-sub-name  { color: #0f766e; }
+
+.light-mode .step-skill-card { background: rgba(101,163,13,0.04); border-color: rgba(101,163,13,0.16); }
+.light-mode .step-skill-name { color: #4d7c0f; }
+
+.light-mode .step-end-card  { background: rgba(21,128,61,0.04); border-color: rgba(21,128,61,0.16); }
+.light-mode .step-end-status { color: #15803d; }
+.light-mode .step-end-chip   { background: rgba(21,128,61,0.08); border-color: rgba(21,128,61,0.18); color: #15803d; }
+
+/* ---------------------------------------------------------------------------
+   Responsive
+--------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .step-editor-breadcrumb { display: none; }
+  .step-todo-tasks { display: none; }
+  .step-tool-kvgrid { display: none; }
+}
